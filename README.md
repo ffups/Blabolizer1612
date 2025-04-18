@@ -15,7 +15,7 @@ Blabolizer1612 is a full-stack web application built with Next.js (frontend) and
 ### 1. Clone the repository
 
 ```sh
-git clone <your-repo-url>
+git clone https://github.com/ffups/Blabolizer1612
 cd Blabolizer1612
 ```
 
