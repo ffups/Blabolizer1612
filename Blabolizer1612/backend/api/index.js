@@ -7,7 +7,7 @@ const rateLimit = require('express-rate-limit'); // Import the rate-limiting lib
 const path = require('path');
 const saveNameToDatabase = require('../src/db/saveNameToDatabase');
 const config = require('../config');
-const checkNameRoute = require('../src/routes/checkName');
+// const checkNameRoute = require('../src/routes/checkName');
 const saveCityToDatabase = require("../src/db/saveCityToDatabase");
 const getCities = require("../src/apicalls/get");
 const deleteCity = require("../src/apicalls/delete");
@@ -72,7 +72,7 @@ app.get("/get", getCities);
 app.delete("/delete", deleteCity);
 
 // Apply the checkNameRoute middleware
-app.use('/', checkNameRoute);
+// app.use('/', checkNameRoute);
 
 // Handle unhandled routes
 app.use((req, res) => {
