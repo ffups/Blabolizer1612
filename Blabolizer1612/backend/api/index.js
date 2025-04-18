@@ -1,84 +1,59 @@
-const express = require('express');
-const serverless = require('serverless-http'); // Add this package
-
-const bodyParser = require('body-parser');
-const cors = require('cors'); // Import the CORS middleware
-const rateLimit = require('express-rate-limit'); // Import the rate-limiting library
-const path = require('path');
 const saveNameToDatabase = require('../src/db/saveNameToDatabase');
-const config = require('../config');
-// const checkNameRoute = require('../src/routes/checkName');
 const saveCityToDatabase = require("../src/db/saveCityToDatabase");
 const getCities = require("../src/apicalls/get");
 const deleteCity = require("../src/apicalls/delete");
 
-const supabaseUrl = config.SUPABASE_URL;
-const supabaseKey = config.SUPABASE_KEY;
+module.exports = async (req, res) => {
+  // CORS headers
+  res.setHeader('Access-Control-Allow-Origin', 'https://blabolizer1612.vercel.app');
+  res.setHeader('Access-Control-Allow-Methods', 'GET,POST,DELETE,OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
-const app = express();
-
-// Enable CORS for requests from the frontend
-app.use(cors({
-  origin: 'https://blabolizer1612.vercel.app', // Allow requests from the frontend
-  methods: ['GET', 'POST', 'DELETE', 'OPTIONS'], // Allowed HTTP methods
-  allowedHeaders: ['Content-Type'], // Allowed headers
-}));
-
-
-// Middleware to parse JSON requests
-app.use(bodyParser.json());
-
-// Rate limiter middleware
-const limiter = rateLimit({
-  windowMs: 1 * 60 * 1000, // 1-minute window
-  max: 10, // Limit each IP to 10 requests per windowMs
-  message: {
-    status: 429,
-    message: "Too many requests. Please try again later.",
-  },
-});
-
-// Apply the rate limiter to all routes
-app.use(limiter);
-
-// API route for saving names
-app.post('/post', async (req, res) => {
-  console.log('POST /apicalls/post route registered');
-  const { name } = req.body;
-
-  if (!name) {
-    return res.status(400).json({ error: 'Name is required' });
+  // Handle preflight
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
   }
 
-  try {
-    const { error } = await saveNameToDatabase(name);
-
-    if (error) {
-      console.error('Database Error:', error);
-      return res.status(500).json({ error: 'Failed to save name to database' });
-    }
-
-    res.status(200).json({ message: 'Name saved successfully' });
-  } catch (err) {
-    console.error('Unexpected Error in API Route:', err);
-    res.status(500).json({ error: 'An unexpected error occurred' });
+  // /post
+  if (req.method === 'POST' && req.url === '/post') {
+    let body = '';
+    req.on('data', chunk => { body += chunk; });
+    req.on('end', async () => {
+      try {
+        const { name } = JSON.parse(body);
+        if (!name) {
+          return res.status(400).json({ error: 'Name is required' });
+        }
+        const { error } = await saveNameToDatabase(name);
+        if (error) {
+          return res.status(500).json({ error: 'Failed to save name to database' });
+        }
+        res.status(200).json({ message: 'Name saved successfully' });
+      } catch (err) {
+        res.status(500).json({ error: 'An unexpected error occurred' });
+      }
+    });
+    return;
   }
-});
 
+  // /db/saveCityToDatabase
+  if (req.method === 'POST' && req.url === '/db/saveCityToDatabase') {
+    return saveCityToDatabase(req, res);
+  }
 
-// Other routes
-app.post("/db/saveCityToDatabase", saveCityToDatabase);
-app.get("/get", getCities);
-app.delete("/delete", deleteCity);
+  // /get
+  if (req.method === 'GET' && req.url === '/get') {
+    return getCities(req, res);
+  }
 
-// Apply the checkNameRoute middleware
-// app.use('/', checkNameRoute);
+  // /delete
+  if (req.method === 'DELETE' && req.url === '/delete') {
+    return deleteCity(req, res);
+  }
 
-// Handle unhandled routes
-app.use((req, res) => {
-  console.log(`Unhandled request: ${req.method} ${req.originalUrl}`);
+  // 404 fallback
+  res.setHeader('Access-Control-Allow-Origin', 'https://blabolizer1612.vercel.app');
+  res.setHeader('Access-Control-Allow-Methods', 'GET,POST,DELETE,OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
   res.status(404).json({ error: 'Route not found' });
-});
-
-module.exports = serverless(app);
-
+};
