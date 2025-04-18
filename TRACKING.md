@@ -1,8 +1,7 @@
 # Tracking and Privacy
 
 ## What I Track
-- Page views and button clicks to improve user experience.
-- Errors and performance metrics to debug and optimize the application.
+- Page views and time spent on page to improve user experience.
 
 ## How I Respect Your Privacy
 - All data is anonymized (e.g., no IP addresses are stored).
@@ -55,7 +54,7 @@ Ensure compliance with privacy laws like GDPR, CCPA, or others:
 
 Consent: Ask for user consent before enabling tracking.
 Data Retention: Store data only as long as necessary.
-Transparency: Clearly explain your tracking practices.asd
+Transparency: Clearly explain your tracking practices.
 
 http://34.51.152.111/matomo/index.php?module=MultiSites&action=index&idSite=1&period=day&date=2025-04-18
 
