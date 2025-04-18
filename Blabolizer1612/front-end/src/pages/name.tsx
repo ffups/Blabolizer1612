@@ -17,7 +17,7 @@ export default function NamePage() {
 
   const handleSubmit = async (e: FormEvent): Promise<void> => {
     e.preventDefault();
-
+  
     try {
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}api/post`, {
         method: 'POST',
@@ -26,15 +26,21 @@ export default function NamePage() {
         },
         body: JSON.stringify({ name }),
       });
-
-      const text = await response.text();
-      const result = JSON.parse(text);
-
+  
+      const result = await response.json();
+  
       if (!response.ok) {
         throw new Error(result.error || 'Something went wrong');
       }
-
-      setGreeting(`Hello, ${name}!`);
+  
+      // If user exists, load relevant content
+      if (result.user) {
+        setGreeting(`Welcome back, ${name}!`);
+        // Optionally: load user-specific content here using result.user
+      } else {
+        setGreeting(`Hello, ${name}!`);
+      }
+  
       localStorage.setItem('username', name);
       window.dispatchEvent(new Event("usernameUpdate"));
       setName('');
@@ -45,7 +51,6 @@ export default function NamePage() {
       }
     }
   };
-
   function setErrorMessage(message: string) {
     setError(message); // Update the error state
   }
