@@ -63,6 +63,28 @@ export default function CityInput() {
     }
   };
 
+  const handleDelete = async (cityToDelete: string) => {
+    try {
+      const response = await fetch("http://localhost:4000/api/delete", {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ city: cityToDelete }),
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || "Failed to delete city.");
+      }
+
+      setMessage(`City "${cityToDelete}" has been deleted.`);
+      fetchCities(); // Refresh the list of cities
+    } catch (error: any) {
+      setMessage(error.message);
+    }
+  };
+
   useEffect(() => {
     fetchCities(); // Fetch the list of cities when the component mounts
   }, []);
@@ -88,7 +110,22 @@ export default function CityInput() {
       <h3 style={{ marginTop: "20px" }}>Cities Added:</h3>
       <ul>
         {cities.map((city, index) => (
-          <li key={index}>{city}</li>
+          <li key={index}>
+            {city}{" "}
+            <button
+              onClick={() => handleDelete(city)}
+              style={{
+                marginLeft: "10px",
+                padding: "2px 5px",
+                backgroundColor: "red",
+                color: "white",
+                border: "none",
+                cursor: "pointer",
+              }}
+            >
+              Delete
+            </button>
+          </li>
         ))}
       </ul>
     </div>

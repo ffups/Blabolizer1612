@@ -7,6 +7,7 @@ const config = require('./config');
 const checkNameRoute = require('./src/routes/checkName');
 const saveCityToDatabase = require("./src/db/saveCityToDatabase");
 const getCities = require("./src/api/get");
+const deleteCity = require("./src/api/delete");
 
 const supabaseUrl = config.SUPABASE_URL;
 const supabaseKey = config.SUPABASE_KEY;
@@ -17,7 +18,7 @@ const PORT = 4000;
 // Enable CORS for requests from the frontend
 app.use(cors({
   origin: 'http://localhost:3001', // Allow requests from the frontend
-  methods: ['GET', 'POST'], // Allowed HTTP methods
+  methods: ['GET', 'POST', 'DELETE'], // Allowed HTTP methods
   allowedHeaders: ['Content-Type'], // Allowed headers
 }));
 
@@ -52,6 +53,7 @@ app.post('/api/post', async (req, res) => {
 
 app.post("/db/saveCityToDatabase", saveCityToDatabase);
 app.get("/api/get", getCities);
+app.delete("/api/delete", deleteCity);
 
 // Start the server
 app.listen(PORT, () => {
