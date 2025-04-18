@@ -38,7 +38,11 @@ export default function CityInput() {
   };
 
   const handleSave = async () => {
-    if (!username) {
+    // Always get the latest username from localStorage
+    const savedName = localStorage.getItem("username");
+    setUsername(savedName);
+  
+    if (!savedName) {
       setMessage("No username found. Please log in first.");
       return;
     }
@@ -54,7 +58,7 @@ export default function CityInput() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ username, city }),
+        body: JSON.stringify({ username: savedName, city }),
       });
   
       const result = await response.json();
@@ -63,13 +67,7 @@ export default function CityInput() {
         throw new Error(result.error || result.message || "Failed to save city.");
       }
   
-      // Check if the backend returned a "welcome back" or similar message
-      if (result.message && result.message.toLowerCase().includes("welcome back")) {
-        setMessage(`Welcome back, ${username}! City "${city}" has been saved.`);
-      } else {
-        setMessage(`City "${city}" has been saved for user "${username}".`);
-      }
-  
+      setMessage(`City "${city}" has been saved for user "${savedName}".`);
       setCity("");
       fetchCities();
     } catch (error: unknown) {
@@ -78,6 +76,8 @@ export default function CityInput() {
       }
     }
   };
+
+
   const handleDelete = async (cityToDelete: string) => {
     if (!username) {
       setMessage("No username found. Please log in first.");
