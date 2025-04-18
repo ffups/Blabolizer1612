@@ -1,27 +1,30 @@
 const express = require('express');
+const serverless = require('serverless-http'); // Add this package
+
 const bodyParser = require('body-parser');
 const cors = require('cors'); // Import the CORS middleware
 const rateLimit = require('express-rate-limit'); // Import the rate-limiting library
 const path = require('path');
-const saveNameToDatabase = require('./src/db/saveNameToDatabase');
-const config = require('./config');
-const checkNameRoute = require('./src/routes/checkName');
-const saveCityToDatabase = require("./src/db/saveCityToDatabase");
-const getCities = require("./src/api/get");
-const deleteCity = require("./src/api/delete");
+const saveNameToDatabase = require('../src/db/saveNameToDatabase');
+const config = require('../config');
+const checkNameRoute = require('../src/routes/checkName');
+const saveCityToDatabase = require("../src/db/saveCityToDatabase");
+const getCities = require("../src/apicalls/get");
+const deleteCity = require("../src/apicalls/delete");
 
 const supabaseUrl = config.SUPABASE_URL;
 const supabaseKey = config.SUPABASE_KEY;
 
 const app = express();
-const PORT = 4000;
 
 // Enable CORS for requests from the frontend
 app.use(cors({
-  origin: 'https://blabolizer1612.vercel.app/', // Allow requests from the frontend
-  methods: ['GET', 'POST', 'DELETE'], // Allowed HTTP methods
+  origin: 'https://blabolizer1612.vercel.app', // Allow requests from the frontend
+  methods: ['GET', 'POST', 'DELETE', 'OPTIONS'], // Allowed HTTP methods
   allowedHeaders: ['Content-Type'], // Allowed headers
 }));
+
+
 // Middleware to parse JSON requests
 app.use(bodyParser.json());
 
@@ -39,7 +42,8 @@ const limiter = rateLimit({
 app.use(limiter);
 
 // API route for saving names
-app.post('/api/post', async (req, res) => {
+app.post('/apicalls/post', async (req, res) => {
+  console.log('POST /apicalls/post route registered');
   const { name } = req.body;
 
   if (!name) {
@@ -61,16 +65,20 @@ app.post('/api/post', async (req, res) => {
   }
 });
 
-// Apply the checkNameRoute middleware
-app.use('/', checkNameRoute);
 
 // Other routes
 app.post("/db/saveCityToDatabase", saveCityToDatabase);
-app.get("/api/get", getCities);
-app.delete("/api/delete", deleteCity);
+app.get("/apicalls/get", getCities);
+app.delete("/apicalls/delete", deleteCity);
 
-// Start the server
-app.listen(PORT, () => {
-  console.log(`Backend API running on http://localhost:${PORT} (for local development)`);
-  console.log(`Backend API deployed at https://blabolizer-backend.vercel.app/`); // Add the deployed URL
+// Apply the checkNameRoute middleware
+app.use('/', checkNameRoute);
+
+// Handle unhandled routes
+app.use((req, res) => {
+  console.log(`Unhandled request: ${req.method} ${req.originalUrl}`);
+  res.status(404).json({ error: 'Route not found' });
 });
+
+module.exports = serverless(app);
+

@@ -1,6 +1,10 @@
 const supabase = require("../config/supabaseClient");
 
 module.exports = async (req, res) => {
+  res.setHeader('Access-Control-Allow-Origin', 'https://blabolizer1612.vercel.app');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, DELETE, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+
   if (req.method !== "GET") {
     return res.status(405).json({ message: "Method not allowed" });
   }
