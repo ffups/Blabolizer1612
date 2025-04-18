@@ -13,7 +13,7 @@ export default function CityInput() {
 
   const fetchCities = async () => {
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/db/getCities`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}db/getCities`, {
         method: 'GET',
       });
 
@@ -44,7 +44,7 @@ export default function CityInput() {
     }
 
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/db/saveCityToDatabase`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}db/saveCityToDatabase`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -69,7 +69,7 @@ export default function CityInput() {
 
   const handleDelete = async (cityToDelete: string) => {
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/delete`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}api/delete`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",

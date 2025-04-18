@@ -38,9 +38,6 @@ const limiter = rateLimit({
 // Apply the rate limiter to all routes
 app.use(limiter);
 
-// Routes
-app.use('/', checkNameRoute);
-
 // API route for saving names
 app.post('/api/post', async (req, res) => {
   const { name } = req.body;
@@ -64,6 +61,10 @@ app.post('/api/post', async (req, res) => {
   }
 });
 
+// Apply the checkNameRoute middleware
+app.use('/', checkNameRoute);
+
+// Other routes
 app.post("/db/saveCityToDatabase", saveCityToDatabase);
 app.get("/db/getCities", getCities);
 app.delete("/db/deleteCity", deleteCity);
