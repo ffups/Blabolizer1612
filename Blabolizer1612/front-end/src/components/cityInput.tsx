@@ -50,7 +50,7 @@ export default function CityInput() {
     }
 
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}db/saveCityToDatabase`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}api/saveCityToDatabase`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
