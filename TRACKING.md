@@ -55,4 +55,4 @@ Ensure compliance with privacy laws like GDPR, CCPA, or others:
 
 Consent: Ask for user consent before enabling tracking.
 Data Retention: Store data only as long as necessary.
-Transparency: Clearly explain your tracking practices.
+Transparency: Clearly explain your tracking practices.asd
