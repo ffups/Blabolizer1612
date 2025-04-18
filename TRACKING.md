@@ -57,3 +57,7 @@ Consent: Ask for user consent before enabling tracking.
 Data Retention: Store data only as long as necessary.
 Transparency: Clearly explain your tracking practices.asd
 
+http://34.51.152.111/matomo/index.php?module=MultiSites&action=index&idSite=1&period=day&date=2025-04-18
+
+username 34.51.152.111 pass 1265
+user ffup pass 123456
