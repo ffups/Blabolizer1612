@@ -66,8 +66,8 @@ app.use('/', checkNameRoute);
 
 // Other routes
 app.post("/db/saveCityToDatabase", saveCityToDatabase);
-app.get("/db/getCities", getCities);
-app.delete("/db/deleteCity", deleteCity);
+app.get("/api/get", getCities);
+app.delete("/api/delete", deleteCity);
 
 // Start the server
 app.listen(PORT, () => {

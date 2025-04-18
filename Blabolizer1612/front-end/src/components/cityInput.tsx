@@ -13,7 +13,7 @@ export default function CityInput() {
 
   const fetchCities = async () => {
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}db/getCities`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}api/get`, {
         method: 'GET',
       });
 
