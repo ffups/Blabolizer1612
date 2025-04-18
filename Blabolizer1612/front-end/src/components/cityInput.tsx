@@ -5,16 +5,17 @@ import { useState, useEffect } from "react";
 export default function CityInput() {
   const [city, setCity] = useState<string>("");
   const [message, setMessage] = useState<string | null>(null);
-  const [cities, setCities] = useState<string[]>([]); // State to store the list of cities
+  const [cities, setCities] = useState<string[]>([]);
+  const [username, setUsername] = useState<string | null>(null);
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setCity(event.target.value);
   };
 
   const fetchCities = async () => {
-    const username = localStorage.getItem("username");
     if (!username) {
       setMessage("No username found. Please log in first.");
+      setCities([]);
       return;
     }
     try {
@@ -22,11 +23,11 @@ export default function CityInput() {
         `${process.env.NEXT_PUBLIC_API_URL}api/get?username=${encodeURIComponent(username)}`,
         { method: 'GET' }
       );
-  
+
       if (!response.ok) {
         throw new Error('Failed to fetch cities.');
       }
-  
+
       const data = await response.json();
       setCities(data.cities);
     } catch (error: unknown) {
@@ -37,8 +38,6 @@ export default function CityInput() {
   };
 
   const handleSave = async () => {
-    const username = localStorage.getItem("username");
-
     if (!username) {
       setMessage("No username found. Please log in first.");
       return;
@@ -64,9 +63,9 @@ export default function CityInput() {
       }
 
       setMessage(`City "${city}" has been saved for user "${username}".`);
-      setCity(""); // Clear the input field
-      fetchCities(); // Refresh the list of cities
-    } catch (error: unknown) { // Use `unknown` instead of `any`
+      setCity("");
+      fetchCities();
+    } catch (error: unknown) {
       if (error instanceof Error) {
         setMessage(error.message);
       }
@@ -74,13 +73,17 @@ export default function CityInput() {
   };
 
   const handleDelete = async (cityToDelete: string) => {
+    if (!username) {
+      setMessage("No username found. Please log in first.");
+      return;
+    }
     try {
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}api/delete`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ city: cityToDelete }),
+        body: JSON.stringify({ city: cityToDelete, username }),
       });
 
       if (!response.ok) {
@@ -89,17 +92,30 @@ export default function CityInput() {
       }
 
       setMessage(`City "${cityToDelete}" has been deleted.`);
-      fetchCities(); // Refresh the list of cities
-    } catch (error: unknown) { // Use `unknown` instead of `any`
+      fetchCities();
+    } catch (error: unknown) {
       if (error instanceof Error) {
         setMessage(error.message);
       }
     }
   };
 
+  // Listen for username changes (e.g., after login or switching users)
   useEffect(() => {
-    fetchCities(); // Fetch the list of cities when the component mounts
+    const updateUsername = () => {
+      const savedName = localStorage.getItem("username");
+      setUsername(savedName);
+    };
+    updateUsername();
+    window.addEventListener("usernameUpdate", updateUsername);
+    return () => window.removeEventListener("usernameUpdate", updateUsername);
   }, []);
+
+  // Fetch cities whenever username changes
+  useEffect(() => {
+    fetchCities();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [username]);
 
   return (
     <div style={{ margin: "20px" }}>
