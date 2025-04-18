@@ -42,10 +42,16 @@ export default function NamePage() {
       window.dispatchEvent(new Event("usernameUpdate")); // Dispatch username update event
       setName(''); // Clear the input field
       setError(null); // Clear any previous errors
-    } catch (err: any) {
-      setError(err.message);
+    } catch (error: unknown) { // Use `unknown` instead of `any`
+      if (error instanceof Error) {
+        setErrorMessage(error.message);
+      }
     }
   };
+
+  function setErrorMessage(message: string) {
+    setError(message); // Update the error state
+  }
 
   return (
     <div style={{ textAlign: 'center', marginTop: '50px' }}>

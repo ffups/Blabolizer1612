@@ -23,9 +23,11 @@ export default function CityInput() {
 
       const data = await response.json();
       setCities(data.cities); // Assuming the API returns an array of cities
-    } catch (error: any) {
-      setMessage(error.message);
-    }
+    } catch (error: unknown) { // Use `unknown` instead of `any`
+      if (error instanceof Error) {
+        setMessage(error.message);
+      }   
+     }
   };
 
   const handleSave = async () => {
@@ -58,8 +60,10 @@ export default function CityInput() {
       setMessage(`City "${city}" has been saved for user "${username}".`);
       setCity(""); // Clear the input field
       fetchCities(); // Refresh the list of cities
-    } catch (error: any) {
-      setMessage(error.message);
+    } catch (error: unknown) { // Use `unknown` instead of `any`
+      if (error instanceof Error) {
+        setMessage(error.message);
+      }
     }
   };
 
@@ -80,8 +84,10 @@ export default function CityInput() {
 
       setMessage(`City "${cityToDelete}" has been deleted.`);
       fetchCities(); // Refresh the list of cities
-    } catch (error: any) {
-      setMessage(error.message);
+    } catch (error: unknown) { // Use `unknown` instead of `any`
+      if (error instanceof Error) {
+        setMessage(error.message);
+      }
     }
   };
 
