@@ -12,15 +12,21 @@ export default function CityInput() {
   };
 
   const fetchCities = async () => {
+    const username = localStorage.getItem("username");
+    if (!username) {
+      setMessage("No username found. Please log in first.");
+      return;
+    }
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}api/get`, {
-        method: 'GET',
-      });
-
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}api/get?username=${encodeURIComponent(username)}`,
+        { method: 'GET' }
+      );
+  
       if (!response.ok) {
         throw new Error('Failed to fetch cities.');
       }
-
+  
       const data = await response.json();
       setCities(data.cities);
     } catch (error: unknown) {

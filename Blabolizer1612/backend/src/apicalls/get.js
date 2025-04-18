@@ -1,29 +1,25 @@
-const supabase = require("../config/supabaseClient");
+const supabase = require('../config/supabaseClient');
 
-module.exports = async (req, res) => {
-  res.setHeader('Access-Control-Allow-Origin', 'https://blabolizer1612.vercel.app');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, DELETE, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-
-  if (req.method !== "GET") {
-    return res.status(405).json({ message: "Method not allowed" });
-  }
-
+module.exports = async (req, res, username) => {
   try {
+    if (!username) {
+      return res.status(400).json({ error: 'Username is required' });
+    }
+
+    // Query only cities for the given username
     const { data, error } = await supabase
-      .from("cities")
-      .select("city");
+      .from('cities') // replace with your actual table name
+      .select('city')
+      .eq('username', username);
 
     if (error) {
-      throw error;
+      return res.status(500).json({ error: 'Failed to fetch cities' });
     }
 
-    if (!data || data.length === 0) {
-      return res.status(404).json({ message: "No cities found." });
-    }
-
-    res.status(200).json({ cities: data.map((row) => row.city) });
-  } catch (error) {
-    res.status(500).json({ message: error.message });
+    // Return just the city names as an array
+    const cities = data.map(row => row.city);
+    res.status(200).json({ cities });
+  } catch (err) {
+    res.status(500).json({ error: 'An unexpected error occurred' });
   }
 };
