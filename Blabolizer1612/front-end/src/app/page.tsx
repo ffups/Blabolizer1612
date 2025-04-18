@@ -1,9 +1,13 @@
 import NamePage from "../pages/name";
+import UsernameDisplay from "../components/usernameDisplay";
+import CityInput from "@/components/cityInput";
 
 export default function Home() {
   return (
     <div>
-      <NamePage />
+            <UsernameDisplay />
+            <NamePage />
+            <CityInput />
     </div>
   );
 }
