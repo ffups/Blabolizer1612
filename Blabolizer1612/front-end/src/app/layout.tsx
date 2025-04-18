@@ -23,7 +23,7 @@ export default function RootLayout({
             _paq.push(['trackPageView']);
             _paq.push(['enableLinkTracking']);
             (function() {
-              var u="//34.51.152.111/matomo/";
+             var u="https://matomo.matomotes.me/matomo/";
               _paq.push(['setTrackerUrl', u+'matomo.php']);
               _paq.push(['setSiteId', '1']);
               var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
