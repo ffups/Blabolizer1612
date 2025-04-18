@@ -18,12 +18,30 @@ body {
 
 body {
   color: var(--foreground);
-  background: var(--background);
+  background: linear-gradient(270deg, #7b2ff2, #420949, #196270, #7b2ff2);
+  background-size: 600% 600%;
+  animation: gradientBG 16s ease infinite;
   font-family: Arial, Helvetica, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
+@keyframes gradientBG {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+body.disable-animation {
+  animation: none !important;
+  background: #000 !important;
+  background-position: 50% 50% !important;
+}
 * {
   box-sizing: border-box;
   padding: 0;
