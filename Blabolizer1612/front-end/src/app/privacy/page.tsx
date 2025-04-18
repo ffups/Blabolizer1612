@@ -85,7 +85,14 @@ export default function PrivacyPage() {
       <p>We track anonymized page views and usage data to improve the app. No personal data is stored. You can opt out at any time.</p>
       <p>You can opt out of analytics tracking below:</p>
       <iframe
-        style={{ border: 0, height: 200, width: "100%" }}
+         style={{
+          border: "2px solid #ccc",
+          borderRadius: "8px",
+          height: 250,
+          width: "100%",
+          margin: "1rem 0",
+          boxShadow: "0 2px 8px rgba(0,0,0,0.1)"
+        }}
         src="https://matomo.matomotes.me/index.php?module=CoreAdminHome&action=optOut&language=en"
         title="Matomo Opt-Out"
       ></iframe>
@@ -109,7 +116,7 @@ export default function PrivacyPage() {
       ) : (
         <form onSubmit={handleSubmit} style={{ marginTop: "1rem" }}>
           <label>
-            Your email or user ID:
+            Your Visitor ID:
             <input type="text" name="identifier" required style={{ marginLeft: "0.5rem" }} />
           </label>
           <br />
@@ -118,6 +125,7 @@ export default function PrivacyPage() {
             <select name="requestType" required style={{ marginLeft: "0.5rem" }}>
               <option value="access">Access/Export my data</option>
               <option value="erasure">Erase my data</option>
+              <option value="erasure">Change my data</option>
             </select>
           </label>
           <br />

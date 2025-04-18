@@ -6,12 +6,12 @@ export default function Header() {
       style={{
         width: "100%",
         padding: "1rem 0",
-        background: "rgba(123,47,242,0.9)",
+        background: "rgba(122, 47, 242, 0)",
         color: "#fff",
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
-        boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
+        boxShadow: "0 2px 8px rgba(0, 0, 0, 0)",
         marginBottom: "2rem",
       }}
     >
