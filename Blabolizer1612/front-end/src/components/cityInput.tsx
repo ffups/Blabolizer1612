@@ -7,6 +7,7 @@ export default function CityInput() {
   const [message, setMessage] = useState<string | null>(null);
   const [cities, setCities] = useState<string[]>([]);
   const [username, setUsername] = useState<string | null>(null);
+  const [loading, setLoading] = useState<boolean>(false);
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setCity(event.target.value);
@@ -37,8 +38,9 @@ export default function CityInput() {
     }
   };
 
-  const handleSave = async () => {
-    // Always get the latest username from localStorage
+  const handleSave = async (e?: React.FormEvent) => {
+    if (e) e.preventDefault(); // Prevent form reload
+
     const savedName = localStorage.getItem("username");
     setUsername(savedName);
   
@@ -51,6 +53,8 @@ export default function CityInput() {
       setMessage("Please enter a valid city name.");
       return;
     }
+  
+    setLoading(true);
   
     try {
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}api/saveCityToDatabase`, {
@@ -74,9 +78,10 @@ export default function CityInput() {
       if (error instanceof Error) {
         setMessage(error.message);
       }
+    } finally {
+      setLoading(false);
     }
   };
-
 
   const handleDelete = async (cityToDelete: string) => {
     if (!username) {
@@ -106,7 +111,6 @@ export default function CityInput() {
     }
   };
 
-  // Listen for username changes (e.g., after login or switching users)
   useEffect(() => {
     const updateUsername = () => {
       const savedName = localStorage.getItem("username");
@@ -121,32 +125,57 @@ export default function CityInput() {
     if (username) {
       fetchCities();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [username]);
 
   return (
     <div style={{ margin: "20px" }}>
-      <label htmlFor="cityInput" style={{ marginRight: "10px" }}>
-        Enter a city name:
-      </label>
-      <input
-        id="cityInput"
-        type="text"
-        value={city}
-        onChange={handleInputChange}
-        placeholder="e.g. Berlin"
-        style={{ marginRight: "10px", padding: "5px" }}
-        aria-label="City name input"
-      />
-      <button
-        onClick={handleSave}
-        style={{ padding: "5px 10px" }}
-        aria-label="Save city"
-      >
-        Save
-      </button>
+      <form onSubmit={handleSave}>
+        <label htmlFor="cityInput" style={{ marginRight: "10px" }}>
+          Enter a city name:
+        </label>
+        <input
+          id="cityInput"
+          type="text"
+          value={city}
+          onChange={handleInputChange}
+          placeholder="e.g. Berlin"
+          style={{ marginRight: "10px", padding: "5px" }}
+          aria-label="City name input"
+          disabled={loading}
+        />
+        <button
+          type="submit"
+          style={{ padding: "5px 10px" }}
+          aria-label="Save city"
+          disabled={loading}
+        >
+          {loading ? "Saving..." : "Save"}
+        </button>
+      </form>
+      {loading && (
+        <div style={{ marginTop: "10px" }}>
+          <span
+            style={{
+              display: 'inline-block',
+              width: '24px',
+              height: '24px',
+              border: '3px solid #7b2ff2',
+              borderTop: '3px solid #eee',
+              borderRadius: '50%',
+              animation: 'spin 1s linear infinite'
+            }}
+          />
+          <style>{`
+            @keyframes spin {
+              0% { transform: rotate(0deg);}
+              100% { transform: rotate(360deg);}
+            }
+          `}</style>
+          <span style={{ marginLeft: "10px" }}>Saving city...</span>
+        </div>
+      )}
       {message && (
-        <p style={{ marginTop: "10px", color: "green" }} aria-live="polite">
+        <p style={{ marginTop: "10px" }} aria-live="polite">
           {message}
         </p>
       )}
@@ -167,6 +196,7 @@ export default function CityInput() {
                 cursor: "pointer",
               }}
               aria-label={`Delete city ${city}`}
+              disabled={loading}
             >
               Delete
             </button>

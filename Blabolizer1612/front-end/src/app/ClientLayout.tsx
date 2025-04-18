@@ -17,7 +17,19 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
 
   return (
     <>
-      {consent === null && <ConsentBanner onConsent={() => setConsent(true)} />}
+      {consent === null && (
+        <ConsentBanner
+          visible={true}
+          onConsent={() => {
+            localStorage.setItem("matomoConsent", "true");
+            setConsent(true);
+          }}
+          onDecline={() => {
+            localStorage.setItem("matomoConsent", "false");
+            setConsent(false);
+          }}
+        />
+      )}
       {consent === true && (
         <Script id="matomo" strategy="afterInteractive">
           {`

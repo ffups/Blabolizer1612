@@ -1,35 +1,32 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
-export default function ConsentBanner({ onConsent }: { onConsent: () => void }) {
-  const [visible, setVisible] = useState(false);
+export default function ConsentBanner({
+  visible,
+  onConsent,
+  onDecline,
+}: {
+  visible: boolean;
+  onConsent: () => void;
+  onDecline: () => void;
+}) {
+  const [fading, setFading] = useState(false);
 
-  useEffect(() => {
-    if (typeof window !== "undefined" && !localStorage.getItem("matomoConsent")) {
-      setVisible(true);
-    }
-  }, []);
-
-  const accept = () => {
-    localStorage.setItem("matomoConsent", "true");
-    setVisible(false);
-    onConsent();
+  const handleClose = (callback?: () => void) => {
+    setFading(true);
+    setTimeout(() => {
+      setFading(false);
+      if (callback) callback();
+    }, 700);
   };
 
-  const decline = () => {
-    localStorage.setItem("matomoConsent", "false");
-    setVisible(false);
-    // Optionally, you can call a callback here if you want to handle declines
-  };
+  const accept = () => handleClose(onConsent);
+  const decline = () => handleClose(onDecline);
 
   if (!visible) return null;
 
   return (
     <div
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="consent-banner-title"
-      aria-describedby="consent-banner-desc"
       style={{
         position: "fixed",
         top: 0,
@@ -42,6 +39,8 @@ export default function ConsentBanner({ onConsent }: { onConsent: () => void }) 
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "center",
+        opacity: fading ? 0 : 1,
+        transition: "opacity 0.7s ease"
       }}
     >
       <div style={{
@@ -64,7 +63,6 @@ export default function ConsentBanner({ onConsent }: { onConsent: () => void }) 
             cursor: "pointer",
             transition: "none",
             background: "rgba(2, 168, 160, 0.51)"
-
           }}>Accept</button>
         <button onClick={decline}
           aria-label="Decline analytics tracking"
@@ -77,7 +75,6 @@ export default function ConsentBanner({ onConsent }: { onConsent: () => void }) 
             borderRadius: "6px",
             cursor: "pointer",
             background: "rgba(2, 168, 160, 0.51)"
-
           }}>Decline</button>
       </div>
     </div>
