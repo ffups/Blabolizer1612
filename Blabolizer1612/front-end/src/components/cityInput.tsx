@@ -42,12 +42,12 @@ export default function CityInput() {
       setMessage("No username found. Please log in first.");
       return;
     }
-
+  
     if (!city.trim()) {
       setMessage("Please enter a valid city name.");
       return;
     }
-
+  
     try {
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}api/saveCityToDatabase`, {
         method: "POST",
@@ -56,13 +56,20 @@ export default function CityInput() {
         },
         body: JSON.stringify({ username, city }),
       });
-
+  
+      const result = await response.json();
+  
       if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.message || "Failed to save city.");
+        throw new Error(result.error || result.message || "Failed to save city.");
       }
-
-      setMessage(`City "${city}" has been saved for user "${username}".`);
+  
+      // Check if the backend returned a "welcome back" or similar message
+      if (result.message && result.message.toLowerCase().includes("welcome back")) {
+        setMessage(`Welcome back, ${username}! City "${city}" has been saved.`);
+      } else {
+        setMessage(`City "${city}" has been saved for user "${username}".`);
+      }
+  
       setCity("");
       fetchCities();
     } catch (error: unknown) {
@@ -71,7 +78,6 @@ export default function CityInput() {
       }
     }
   };
-
   const handleDelete = async (cityToDelete: string) => {
     if (!username) {
       setMessage("No username found. Please log in first.");
