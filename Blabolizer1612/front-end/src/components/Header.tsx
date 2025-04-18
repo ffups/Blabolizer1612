@@ -14,18 +14,23 @@ export default function Header() {
         boxShadow: "0 2px 8px rgba(0, 0, 0, 0)",
         marginBottom: "2rem",
       }}
+      aria-label="Site header"
     >
-      <nav>
-        <Link href="/" style={{
-          color: "#fff",
-          textDecoration: "none",
-          fontWeight: "bold",
-          fontSize: "1.2rem",
-          padding: "0.5rem 1.5rem",
-          borderRadius: "6px",
-          background: "rgba(25,98,112,0.7)",
-          marginRight: "1rem"
-        }}>
+      <nav aria-label="Main navigation">
+        <Link
+          href="/"
+          aria-label="Go to homepage"
+          style={{
+            color: "#fff",
+            textDecoration: "none",
+            fontWeight: "bold",
+            fontSize: "1.2rem",
+            padding: "0.5rem 1.5rem",
+            borderRadius: "6px",
+            background: "rgba(25,98,112,0.7)",
+            marginRight: "1rem"
+          }}
+        >
           Home
         </Link>
         {/* Add more buttons/links here as needed */}

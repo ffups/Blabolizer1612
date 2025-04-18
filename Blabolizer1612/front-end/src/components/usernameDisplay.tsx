@@ -48,6 +48,8 @@ export default function UsernameDisplay() {
         fontSize: "16px",
         fontWeight: "bold",
       }}
+      aria-live="polite"
+      aria-label={username ? `Logged in as ${username}` : "No user logged in"}
     >
       {username ? ` ${username}` : "No user logged in"}
     </div>

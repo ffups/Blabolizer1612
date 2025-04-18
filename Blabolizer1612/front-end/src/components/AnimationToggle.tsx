@@ -33,6 +33,8 @@ export default function AnimationToggle() {
         cursor: "pointer"
       }}
       onClick={() => setEnabled((v) => !v)}
+      aria-pressed={enabled}
+      aria-label={enabled ? "Disable background animation" : "Enable background animation"}
     >
       {enabled ? "Disable" : "Enable"} Background Animation
     </button>

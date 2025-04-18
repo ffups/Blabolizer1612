@@ -29,16 +29,27 @@ export default function PrivacyPage() {
   }, []);
 
   useEffect(() => {
-    if (consent) {
+    if (!consent) return;
+
+    let attempts = 0;
+    const maxAttempts = 10;
+    const interval = setInterval(() => {
       if (typeof window !== "undefined" && window._paq) {
         window._paq.push([
           function (this: MatomoTrackerThis) {
             const id = this.getVisitorId?.();
-            if (id) setVisitorId(id);
+            if (id) {
+              setVisitorId(id);
+              clearInterval(interval);
+            }
           },
         ]);
       }
-    }
+      attempts++;
+      if (attempts >= maxAttempts) clearInterval(interval);
+    }, 300);
+
+    return () => clearInterval(interval);
   }, [consent]);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -85,7 +96,7 @@ export default function PrivacyPage() {
       <p>We track anonymized page views and usage data to improve the app. No personal data is stored. You can opt out at any time.</p>
       <p>You can opt out of analytics tracking below:</p>
       <iframe
-         style={{
+        style={{
           border: "2px solid #ccc",
           borderRadius: "8px",
           height: 250,
@@ -95,44 +106,56 @@ export default function PrivacyPage() {
         }}
         src="https://matomo.matomotes.me/index.php?module=CoreAdminHome&action=optOut&language=en"
         title="Matomo Opt-Out"
+        aria-label="Matomo analytics opt-out form"
       ></iframe>
 
       <h2>Your Visitor Profile ID</h2>
       {consent === false ? (
-        <p>You have declined analytics tracking, so no visitor ID is available.</p>
+        <p aria-live="polite">You have declined analytics tracking, so no visitor ID is available.</p>
       ) : visitorId ? (
-        <p>
+        <p aria-live="polite">
           Your Matomo Visitor ID: <code>{visitorId}</code>
           <br />
           You can use this ID to request access to or erasure of your analytics data.
         </p>
       ) : (
-        <p>Loading your visitor ID...</p>
+        <p aria-live="polite">Loading your visitor ID...</p>
       )}
 
       <h2>Request Your Data or Erasure</h2>
       {submitted ? (
-        <p>Thank you! Your request has been received. We will process it as soon as possible.</p>
+        <p aria-live="polite">Thank you! Your request has been received. We will process it as soon as possible.</p>
       ) : (
         <form onSubmit={handleSubmit} style={{ marginTop: "1rem" }}>
           <label>
             Your Visitor ID:
-            <input type="text" name="identifier" required style={{ marginLeft: "0.5rem" }} />
+            <input
+              aria-label="Your Matomo Visitor ID"
+              type="text"
+              name="identifier"
+              required style={{ marginLeft: "0.5rem" }} />
           </label>
           <br />
           <label>
             Request type:
-            <select name="requestType" required style={{ marginLeft: "0.5rem" }}>
+            <select
+              aria-label="Type of GDPR request"
+              name="requestType"
+              required
+              style={{ marginLeft: "0.5rem" }}>
               <option value="access">Access/Export my data</option>
               <option value="erasure">Erase my data</option>
               <option value="erasure">Change my data</option>
             </select>
           </label>
           <br />
-          <button type="submit" style={{ marginTop: "0.5rem" }} disabled={loading}>
+          <button type="submit"
+            aria-label="Submit GDPR request"
+            style={{ marginTop: "0.5rem" }}
+            disabled={loading}>
             {loading ? "Submitting..." : "Submit Request"}
           </button>
-          {error && <p style={{ color: "red" }}>{error}</p>}
+          {error && <p style={{ color: "red" }} aria-live="polite">{error}</p>}
         </form>
       )}
     </main>

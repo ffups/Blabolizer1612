@@ -58,20 +58,37 @@ export default function NamePage() {
   return (
     <div style={{ textAlign: 'center', marginTop: '50px' }}>
       <h1>Username</h1>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} aria-label="Username form">
+        <label htmlFor="username-input" style={{ display: "none" }}>
+          Enter your username
+        </label>
         <input
+          id="username-input"
           type="text"
           placeholder="name or something"
           value={name}
           onChange={(e) => setName(e.target.value)}
           style={{ padding: '10px', fontSize: '16px', marginRight: '10px' }}
+          aria-label="Username"
         />
-        <button type="submit" style={{ padding: '10px 20px', fontSize: '16px' }}>
+        <button
+          type="submit"
+          style={{ padding: '10px 20px', fontSize: '16px' }}
+          aria-label="Submit username"
+        >
           boop
         </button>
       </form>
-      {greeting && <p style={{ marginTop: '20px', fontSize: '20px' }}>{greeting}</p>}
-      {error && <p style={{ color: 'red', marginTop: '10px' }}>{error}</p>}
+      {greeting && (
+        <p style={{ marginTop: '20px', fontSize: '20px' }} aria-live="polite">
+          {greeting}
+        </p>
+      )}
+      {error && (
+        <p style={{ color: 'red', marginTop: '10px' }} aria-live="assertive">
+          {error}
+        </p>
+      )}
     </div>
   );
 }

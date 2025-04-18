@@ -26,6 +26,10 @@ export default function ConsentBanner({ onConsent }: { onConsent: () => void }) 
 
   return (
     <div
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="consent-banner-title"
+      aria-describedby="consent-banner-desc"
       style={{
         position: "fixed",
         top: 0,
@@ -49,6 +53,7 @@ export default function ConsentBanner({ onConsent }: { onConsent: () => void }) 
           Please choose an option to continue.
         </p>
         <button onClick={accept}
+          aria-label="Accept analytics tracking"
           style={{
             marginRight: "1rem",
             padding: "1rem 2.5rem",
@@ -62,6 +67,7 @@ export default function ConsentBanner({ onConsent }: { onConsent: () => void }) 
 
           }}>Accept</button>
         <button onClick={decline}
+          aria-label="Decline analytics tracking"
           style={{
             marginRight: "1rem",
             padding: "1rem 2.5rem",

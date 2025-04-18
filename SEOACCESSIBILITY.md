@@ -1,0 +1,1 @@
+I use semantic HTML elements like <main>, <header>, and <nav> for screen reader compatibility. All interactive elements are keyboard accessible. ARIA labels are added where needed for assistive technology. For SEO, I include descriptive titles, meta tags, and structured headings.

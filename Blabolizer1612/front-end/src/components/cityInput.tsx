@@ -136,14 +136,23 @@ export default function CityInput() {
         onChange={handleInputChange}
         placeholder="e.g. Berlin"
         style={{ marginRight: "10px", padding: "5px" }}
+        aria-label="City name input"
       />
-      <button onClick={handleSave} style={{ padding: "5px 10px" }}>
+      <button
+        onClick={handleSave}
+        style={{ padding: "5px 10px" }}
+        aria-label="Save city"
+      >
         Save
       </button>
-      {message && <p style={{ marginTop: "10px", color: "green" }}>{message}</p>}
+      {message && (
+        <p style={{ marginTop: "10px", color: "green" }} aria-live="polite">
+          {message}
+        </p>
+      )}
 
       <h3 style={{ marginTop: "20px" }}>Cities Added:</h3>
-      <ul>
+      <ul aria-label="List of added cities">
         {cities.map((city, index) => (
           <li key={index}>
             {city}{" "}
@@ -157,6 +166,7 @@ export default function CityInput() {
                 border: "none",
                 cursor: "pointer",
               }}
+              aria-label={`Delete city ${city}`}
             >
               Delete
             </button>
