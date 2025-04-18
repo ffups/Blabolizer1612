@@ -1,6 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors'); // Import the CORS middleware
+const rateLimit = require('express-rate-limit'); // Import the rate-limiting library
 const path = require('path');
 const saveNameToDatabase = require('./src/db/saveNameToDatabase');
 const config = require('./config');
@@ -24,6 +25,19 @@ app.use(cors({
 
 // Middleware to parse JSON requests
 app.use(bodyParser.json());
+
+// Rate limiter middleware
+const limiter = rateLimit({
+  windowMs: 1 * 60 * 1000, // 1-minute window
+  max: 10, // Limit each IP to 10 requests per windowMs
+  message: {
+    status: 429,
+    message: "Too many requests. Please try again later.",
+  },
+});
+
+// Apply the rate limiter to all routes
+app.use(limiter);
 
 // Routes
 app.use('/', checkNameRoute);
@@ -52,8 +66,8 @@ app.post('/api/post', async (req, res) => {
 });
 
 app.post("/db/saveCityToDatabase", saveCityToDatabase);
-app.get("/api/get", getCities);
-app.delete("/api/delete", deleteCity);
+app.get("/db/getCities", getCities);
+app.delete("/db/deleteCity", deleteCity);
 
 // Start the server
 app.listen(PORT, () => {

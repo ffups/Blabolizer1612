@@ -14,6 +14,10 @@ module.exports = async (req, res) => {
       throw error;
     }
 
+    if (!data || data.length === 0) {
+      return res.status(404).json({ message: "No cities found." });
+    }
+
     res.status(200).json({ cities: data.map((row) => row.city) });
   } catch (error) {
     res.status(500).json({ message: error.message });

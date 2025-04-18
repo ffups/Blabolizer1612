@@ -12,16 +12,21 @@ module.exports = async (req, res) => {
   }
 
   try {
-    const { error } = await supabase
+    const { data, error } = await supabase
       .from("cities")
       .delete()
-      .eq("city", city);
+      .eq("city", city)
+      .select();
 
     if (error) {
       throw error;
     }
 
-    res.status(200).json({ message: "City deleted successfully." });
+    if (!data || data.length === 0) {
+      return res.status(404).json({ message: `City "${city}" not found.` });
+    }
+
+    res.status(200).json({ message: `City "${city}" deleted successfully.` });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
