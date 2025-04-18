@@ -19,18 +19,15 @@ export default function NamePage() {
     e.preventDefault();
 
     try {
-      const response = await fetch('http://localhost:4000/api/post', {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/post`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ name }),
       });
-      // Log the raw response for debugging
-      const text = await response.text();
-      console.log('Raw response:', text);
 
-      // Parse the response as JSON
+      const text = await response.text();
       const result = JSON.parse(text);
 
       if (!response.ok) {
@@ -38,11 +35,11 @@ export default function NamePage() {
       }
 
       setGreeting(`Hello, ${name}!`);
-      localStorage.setItem('username', name); // Save the username to local storage
-      window.dispatchEvent(new Event("usernameUpdate")); // Dispatch username update event
-      setName(''); // Clear the input field
-      setError(null); // Clear any previous errors
-    } catch (error: unknown) { // Use `unknown` instead of `any`
+      localStorage.setItem('username', name);
+      window.dispatchEvent(new Event("usernameUpdate"));
+      setName('');
+      setError(null);
+    } catch (error: unknown) {
       if (error instanceof Error) {
         setErrorMessage(error.message);
       }

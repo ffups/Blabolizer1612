@@ -13,21 +13,21 @@ export default function CityInput() {
 
   const fetchCities = async () => {
     try {
-      const response = await fetch("http://localhost:4000/api/get", {
-        method: "GET",
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/db/getCities`, {
+        method: 'GET',
       });
 
       if (!response.ok) {
-        throw new Error("Failed to fetch cities.");
+        throw new Error('Failed to fetch cities.');
       }
 
       const data = await response.json();
-      setCities(data.cities); // Assuming the API returns an array of cities
-    } catch (error: unknown) { // Use `unknown` instead of `any`
+      setCities(data.cities);
+    } catch (error: unknown) {
       if (error instanceof Error) {
         setMessage(error.message);
-      }   
-     }
+      }
+    }
   };
 
   const handleSave = async () => {
@@ -44,7 +44,7 @@ export default function CityInput() {
     }
 
     try {
-      const response = await fetch("http://localhost:4000/db/saveCityToDatabase", {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/db/saveCityToDatabase`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -69,7 +69,7 @@ export default function CityInput() {
 
   const handleDelete = async (cityToDelete: string) => {
     try {
-      const response = await fetch("http://localhost:4000/api/delete", {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/delete`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",

@@ -18,11 +18,10 @@ const PORT = 4000;
 
 // Enable CORS for requests from the frontend
 app.use(cors({
-  origin: 'http://localhost:3001', // Allow requests from the frontend
+  origin: 'https://blabolizer1612.vercel.app/', // Allow requests from the frontend
   methods: ['GET', 'POST', 'DELETE'], // Allowed HTTP methods
   allowedHeaders: ['Content-Type'], // Allowed headers
 }));
-
 // Middleware to parse JSON requests
 app.use(bodyParser.json());
 
@@ -71,5 +70,6 @@ app.delete("/db/deleteCity", deleteCity);
 
 // Start the server
 app.listen(PORT, () => {
-  console.log(`Backend API running on http://localhost:${PORT}`);
+  console.log(`Backend API running on http://localhost:${PORT} (for local development)`);
+  console.log(`Backend API deployed at https://blabolizer-backend.vercel.app/`); // Add the deployed URL
 });
