@@ -117,9 +117,10 @@ export default function CityInput() {
     return () => window.removeEventListener("usernameUpdate", updateUsername);
   }, []);
 
-  // Fetch cities whenever username changes
   useEffect(() => {
-    fetchCities();
+    if (username) {
+      fetchCities();
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [username]);
 
