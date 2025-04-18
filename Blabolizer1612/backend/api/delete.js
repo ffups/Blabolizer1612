@@ -1,10 +1,9 @@
 const deleteCity = require("../src/apicalls/delete");
 
-module.exports = (req, res) => {
-  res.setHeader('Access-Control-Allow-Origin', 'https://blabolizer1612.vercel.app');
-  res.setHeader('Access-Control-Allow-Methods', 'DELETE,OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+const setCors = require('../src/utils/cors'); // adjust path as needed
 
+module.exports = (req, res) => {
+  setCors(res);
   if (req.method === 'OPTIONS') {
     return res.status(200).end();
   }
