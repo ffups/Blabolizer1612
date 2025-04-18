@@ -19,7 +19,7 @@ export default function NamePage() {
     e.preventDefault();
 
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}api/apicalls/post`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}api/post`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
