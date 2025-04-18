@@ -1,9 +1,8 @@
 const getCities = require("../src/apicalls/get");
+const setCors = require('../src/utils/cors'); // adjust path as needed
 
 module.exports = (req, res) => {
-  res.setHeader('Access-Control-Allow-Origin', 'https://blabolizer1612.vercel.app');
-  res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  setCors(res);
 
   if (req.method === 'OPTIONS') {
     return res.status(200).end();
