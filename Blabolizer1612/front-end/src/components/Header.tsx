@@ -1,4 +1,5 @@
 import Link from "next/link";
+import UsernameDisplay from "./usernameDisplay";
 
 export default function Header() {
   return (
@@ -16,7 +17,14 @@ export default function Header() {
       }}
       aria-label="Site header"
     >
-      <nav aria-label="Main navigation">
+      <nav
+        aria-label="Main navigation"
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: "1.5rem" // sensible gap between nav items
+        }}
+      >
         <Link
           href="/"
           aria-label="Go to homepage"
@@ -28,12 +36,13 @@ export default function Header() {
             padding: "0.5rem 1.5rem",
             borderRadius: "6px",
             background: "rgba(25,98,112,0.7)",
-            marginRight: "1rem"
+            marginRight: 0 // remove marginRight, use gap instead
           }}
         >
           Home
         </Link>
         {/* Add more buttons/links here as needed */}
+        <UsernameDisplay />
       </nav>
     </header>
   );
