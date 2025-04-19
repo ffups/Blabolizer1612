@@ -21,6 +21,11 @@ export default function Home() {
 
   return (
     <div>
+         <p>Ever wanted to travel but unsure where to go next?</p>
+      <p>This tool aims to help this pressing problem by generating a random city from a list curated by you!</p>
+      <p>All you need to do to get started is create a list of cities you would like to visit! Or choose from a preset :)</p>
+      <p>hint: you can press on the city to get more information on it!</p>
+
       {!username ? (
         <NamePage onComplete={() => setUsername(localStorage.getItem("username"))} />
       ) : (

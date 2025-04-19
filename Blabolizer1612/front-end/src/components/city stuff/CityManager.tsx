@@ -5,7 +5,7 @@ import CityInput from "./cityInput";
 import RandomCityPicker from "./randomizer";
 
 export default function CityManager() {
-  const [showRandomizer, setShowRandomizer] = useState(false);
+  const [showRandomizer, setShowRandomizer] = useState<null | boolean>(null);
   const [username, setUsername] = useState<string | null>(null);
   const [cities, setCities] = useState<string[]>([]);
   const [error, setError] = useState<string | null>(null);
@@ -56,8 +56,8 @@ export default function CityManager() {
           style={{
             padding: "8px 16px",
             marginRight: "10px",
-            background: showRandomizer ? "#eee" : "#7b2ff2",
-            color: showRandomizer ? "#333" : "#fff",
+            background: showRandomizer === false ? "#7b2ff2" : "#eee",
+            color: showRandomizer === false ? "#fff" : "#333",
             border: "none",
             borderRadius: "6px",
             cursor: "pointer",
@@ -70,8 +70,8 @@ export default function CityManager() {
           onClick={() => setShowRandomizer(true)}
           style={{
             padding: "8px 16px",
-            background: showRandomizer ? "#7b2ff2" : "#eee",
-            color: showRandomizer ? "#fff" : "#333",
+            background: showRandomizer === true ? "#7b2ff2" : "#eee",
+            color: showRandomizer === true ? "#fff" : "#333",
             border: "none",
             borderRadius: "6px",
             cursor: "pointer",
@@ -81,20 +81,25 @@ export default function CityManager() {
           Randomizer
         </button>
       </div>
-      {showRandomizer ? (
-        <RandomCityPicker
-          username={username}
-          cities={cities}
-          error={error}
-          fetchCities={fetchCities}
-        />
-      ) : (
-        <CityInput
-          username={username}
-          cities={cities}
-          error={error}
-          fetchCities={fetchCities}
-        />
+      {/* Only show content when a button is selected */}
+      {showRandomizer === false && (
+        <div>
+          <CityInput
+            username={username}
+            cities={cities}
+            error={error}
+            fetchCities={fetchCities}
+          />
+        </div>
+      )}
+      {showRandomizer === true && (
+        <div>
+          <RandomCityPicker
+            username={username}
+            cities={cities}
+            fetchCities={fetchCities}
+          />
+        </div>
       )}
     </div>
   );

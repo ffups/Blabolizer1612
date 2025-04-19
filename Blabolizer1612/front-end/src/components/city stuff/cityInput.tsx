@@ -91,11 +91,7 @@ export default function CityInput({ username, cities, error, fetchCities }: Prop
 
   return (
     <div style={{ margin: "20px" }}>
-      <p>Ever wanted to travel but unsure where to go next?</p>
-      <p>This tool aims to help this pressing problem by generating a random city from a list curated by you!</p>
-      <p>All you need to do to get started is create a list of cities you would like to visit! Or choose from a preset :)</p>
-      <p>hint: you can press on the city to get more information on it!</p>
-
+   
       {/* Add city input form */}
       <form onSubmit={handleAddCity} style={{ marginBottom: "16px" }}>
         <input
@@ -137,9 +133,15 @@ export default function CityInput({ username, cities, error, fetchCities }: Prop
       <h3 style={{ marginTop: "20px" }}>Cities Added:</h3>
       <ul aria-label="List of added cities">
         {cities.map((city, index) => (
-          <li key={index}>
+          <li key={index}
+          style={{
+            marginBottom: "1rem", // Add more space below each city
+            marginTop: "1rem",    // Add more space above each city (optional)
+            display: "flex",
+            alignItems: "center"
+          }}>
             <span
-              style={{ color: "#0070f3", textDecoration: "underline", cursor: "pointer" }}
+              style={{  textDecoration: "underline",textTransform: "capitalize", cursor: "pointer" }}
               onClick={() => {
                 if (window.confirm(`Go to the page for "${city}"?`)) {
                   router.push(`/city/${encodeURIComponent(city)}`);
@@ -157,7 +159,6 @@ export default function CityInput({ username, cities, error, fetchCities }: Prop
               style={{
                 marginLeft: "10px",
                 padding: "2px 5px",
-                backgroundColor: "red",
                 color: "white",
                 border: "none",
                 cursor: "pointer",

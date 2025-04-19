@@ -17,7 +17,14 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body>
+      <body 
+        style={{
+          minHeight: "100vh",
+          display: "flex",
+          flexDirection: "column",
+          margin: 0,
+        }}
+        >
 
         <UsernameProvider>
       <Header/>

@@ -13,7 +13,7 @@ export default function Footer() {
       marginTop: "auto", // key for sticky-to-bottom in flex layouts
       position: "static", // not fixed!
       left: undefined,
-      bottom: undefined,
+      bottom: 0,
       zIndex: 100,
     }}
       aria-label="Site footer"
