@@ -1,8 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
   import ClientLayout from "./ClientLayout";
-import Footer from "@/components/Footer";
-import Header from "@/components/Header";
 
 export const metadata: Metadata = {
   title: "Blabolizer1612",
@@ -17,11 +15,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <Header />
         <ClientLayout>{children}
         </ClientLayout>
 
-        <Footer />
       </body>
     </html>
   );

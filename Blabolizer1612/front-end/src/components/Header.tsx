@@ -36,13 +36,26 @@ export default function Header() {
             padding: "0.5rem 1.5rem",
             borderRadius: "6px",
             background: "rgba(25,98,112,0.7)",
-            marginRight: 0 // remove marginRight, use gap instead
           }}
         >
           Home
         </Link>
         {/* Add more buttons/links here as needed */}
+        <Link
+          href="/profile"
+          aria-label="Go to profile page"
+          style={{
+            color: "#fff",
+            textDecoration: "none",
+            fontWeight: "bold",
+            fontSize: "1.2rem",
+            padding: "0.5rem 1.5rem",
+            borderRadius: "6px",
+            background: "rgba(25,98,112,0.7)",
+          }}>
         <UsernameDisplay />
+        </Link>
+
       </nav>
     </header>
   );

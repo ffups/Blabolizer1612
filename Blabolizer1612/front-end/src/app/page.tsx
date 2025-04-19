@@ -3,6 +3,8 @@
 import { useEffect, useState } from "react";
 import NamePage from "../pages/name";
 import CityInput from "@/components/cityInput";
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
 
 export default function Home() {
   const [username, setUsername] = useState<string | null>(null);
@@ -21,6 +23,7 @@ export default function Home() {
 
   return (
     <div>
+        <Header />
       {!username ? (
         <NamePage onComplete={() => setUsername(localStorage.getItem("username"))} />
       ) : (
@@ -28,6 +31,7 @@ export default function Home() {
           <CityInput />
         </>
       )}
+      <Footer/>
     </div>
   );
 }
