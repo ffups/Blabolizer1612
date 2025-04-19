@@ -53,7 +53,7 @@ export default function CityManager() {
     <div>
       <div style={{ marginBottom: "20px" }}>
         <button
-          onClick={() => setShowRandomizer(false)}
+          onClick={() => setShowRandomizer(showRandomizer === false ? null : false)}
           style={{
             padding: "8px 16px",
             marginRight: "10px",
@@ -68,7 +68,7 @@ export default function CityManager() {
           City Input
         </button>
         <button
-          onClick={() => setShowRandomizer(true)}
+          onClick={() => setShowRandomizer(showRandomizer === true ? null : true)}
           style={{
             padding: "8px 16px",
             background: showRandomizer === true ? "#7b2ff2" : "#eee",

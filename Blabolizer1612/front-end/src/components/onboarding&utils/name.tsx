@@ -114,6 +114,8 @@ export default function NamePage({ onComplete }: { onComplete: () => void }) {
           <div style={{ marginTop: 16 }}>
             <Image
               src={selectedPic}
+              width={48}      // <-- required
+  height={48} 
               alt="Selected profile"
               style={{ width: 80, height: 80, borderRadius: "50%", border: "2px solid #7b2ff2" }}
             />

@@ -47,6 +47,8 @@ export default function ProfilePicSelector({
            <Image
                   src={pic}
                   alt="Profile option"
+                  width={48}      // <-- required
+                  height={48} 
                   style={{
                     width: 48,
                     height: 48,
