@@ -1,8 +1,6 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
 
 declare global {
   interface Window {
@@ -94,7 +92,6 @@ export default function PrivacyPage() {
 
   return (
     <main>
-      <Header />
       <h1>Privacy Policy</h1>
       <p>We track anonymized page views and usage data to improve the app. No personal data is stored. You can opt out at any time.</p>
       <p>You can opt out of analytics tracking below:</p>
@@ -161,7 +158,6 @@ export default function PrivacyPage() {
           {error && <p style={{ color: "red" }} aria-live="polite">{error}</p>}
         </form>
       )}
-      <Footer />
       </main>
   );
 }
