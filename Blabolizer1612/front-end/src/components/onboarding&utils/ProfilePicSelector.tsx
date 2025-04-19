@@ -1,4 +1,5 @@
 import React from "react";
+import Image from "next/image";
 
 const profilePics = [
   "/profile1.png",
@@ -13,12 +14,14 @@ export default function ProfilePicSelector({
   selectedPic: string;
   onSelect: (pic: string) => void;
 }) {
-    const handleSelect = (pic: string) => {
-        localStorage.setItem("profilePic", pic);
-        window.dispatchEvent(new Event("usernameUpdate"));
-        if (onSelect) onSelect(pic);
-      };
-    
+  const handleSelect = (pic: string) => {
+    if (typeof window !== "undefined") {
+      localStorage.setItem("profilePic", pic);
+      window.dispatchEvent(new Event("usernameUpdate"));
+    }
+    if (onSelect) onSelect(pic);
+  };
+
   return (
     <div>
       <div style={{ marginBottom: 8, fontWeight: "bold" }}>Change your profile picture:</div>
@@ -41,7 +44,7 @@ export default function ProfilePicSelector({
           }}
           aria-label="Select profile picture"
         >
-           <img
+           <Image
                   src={pic}
                   alt="Profile option"
                   style={{

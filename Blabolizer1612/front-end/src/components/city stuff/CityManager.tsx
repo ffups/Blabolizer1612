@@ -9,9 +9,10 @@ export default function CityManager() {
   const [username, setUsername] = useState<string | null>(null);
   const [cities, setCities] = useState<string[]>([]);
   const [error, setError] = useState<string | null>(null);
-  
+
   // Get username from localStorage and update on event
   useEffect(() => {
+    if (typeof window === "undefined") return;
     const updateUsername = () => setUsername(localStorage.getItem("username"));
     updateUsername();
     window.addEventListener("usernameUpdate", updateUsername);

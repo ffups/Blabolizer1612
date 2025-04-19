@@ -8,10 +8,14 @@ export default function Home() {
   const [username, setUsername] = useState<string | null>(null);
 
   useEffect(() => {
-    setUsername(localStorage.getItem("username"));
+    if (typeof window !== "undefined") {
+      // safe to use localStorage
+      setUsername(localStorage.getItem("username"));
+    }
   }, []);
 
   useEffect(() => {
+    if (typeof window === "undefined") return;
     const updateUsername = () => setUsername(localStorage.getItem("username"));
     window.addEventListener("usernameUpdate", updateUsername);
     return () => {

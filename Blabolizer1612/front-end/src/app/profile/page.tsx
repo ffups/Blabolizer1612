@@ -13,14 +13,19 @@ const profilePics = [
 export default function UserProfile() {
   const [editing, setEditing] = useState(false);
   const [newName, setNewName] = useState("");
-  const [selectedPic, setSelectedPic] = useState<string>(() => localStorage.getItem("profilePic") || profilePics[0]);
+  const [selectedPic, setSelectedPic] = useState<string>(profilePics[0]);
   const ignoreBlurRef = useRef(false);
   const { username, setUsername } = useUsername();
 
   useEffect(() => {
+    if (typeof window !== "undefined") {
+      setSelectedPic(localStorage.getItem("profilePic") || profilePics[0]);
+    }
+  }, []);
+
+  useEffect(() => {
     // Initialize with context username or localStorage
     setNewName(username || localStorage.getItem("username") || "");
-    setSelectedPic(localStorage.getItem("profilePic") || profilePics[0]);
   }, [username]);
 
   const handlePicSelect = (pic: string) => {

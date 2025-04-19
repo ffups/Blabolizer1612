@@ -2,6 +2,7 @@
 
 import { useState, useEffect, FormEvent } from 'react';
 import ProfilePicSelector from "@/components/onboarding&utils/ProfilePicSelector";
+import Image from "next/image";
 
 const profilePics = [
   "/profile1.png",
@@ -15,12 +16,21 @@ export default function NamePage({ onComplete }: { onComplete: () => void }) {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [fading, setFading] = useState(false);
-  const [selectedPic, setSelectedPic] = useState<string>(() => localStorage.getItem("profilePic") || profilePics[0]);
+  const [selectedPic, setSelectedPic] = useState<string>(profilePics[0]);
 
   useEffect(() => {
-    const savedName = localStorage.getItem('username');
-    if (savedName) {
-      setName(savedName);
+    if (typeof window !== "undefined") {
+      const savedName = localStorage.getItem('username');
+      if (savedName) {
+        setName(savedName);
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const storedPic = localStorage.getItem("profilePic");
+      if (storedPic) setSelectedPic(storedPic);
     }
   }, []);
 
@@ -102,7 +112,7 @@ export default function NamePage({ onComplete }: { onComplete: () => void }) {
         <div style={{ margin: "24px 0" }}>
           <ProfilePicSelector selectedPic={selectedPic} onSelect={handlePicSelect} />
           <div style={{ marginTop: 16 }}>
-            <img
+            <Image
               src={selectedPic}
               alt="Selected profile"
               style={{ width: 80, height: 80, borderRadius: "50%", border: "2px solid #7b2ff2" }}

@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useUsername } from "@/context/UsernameContext";
+import Image from "next/image";
 
 export default function Header() {
   const [profilePic, setProfilePic] = useState<string | null>(null);
@@ -71,7 +72,7 @@ export default function Header() {
           }}
         >
           {profilePic && (
-            <img
+            <Image
               src={profilePic}
               alt="Profile"
               style={{
