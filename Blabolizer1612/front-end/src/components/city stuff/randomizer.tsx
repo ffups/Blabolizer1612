@@ -1,6 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
+import CityList, { defaultRenderItem } from "./CityList";
 
 type Props = {
   username: string | null;
@@ -17,6 +19,10 @@ export default function RandomCityPicker({ username, cities, fetchCities }: Prop
   const [loading, setLoading] = useState(false);
   const [arrowIndex, setArrowIndex] = useState<number | null>(null);
   const [animating, setAnimating] = useState(false);
+  const [statusMessage, setStatusMessage] = useState<string | null>(null);
+  const [loadingAction, setLoadingAction] = useState<"add" | "delete" | null>(null);
+
+  const router = useRouter();
 
   const handlePick = () => {
     if (cities.length === 0 || animating) return;
@@ -52,32 +58,17 @@ export default function RandomCityPicker({ username, cities, fetchCities }: Prop
 
   return (
     <div style={{ textAlign: "center" }}>
-      <h3>{username ? `${username}'s Cities` : "Cities"}</h3>
-      <ul style={{ listStyle: "none", padding: 0, margin: "1rem auto", maxWidth: 320 }}>
-        {cities.map((city, idx) => (
-          <li
-            key={idx}
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "flex-start",
-              fontWeight: pickedCity === city ? "" : "normal",
-              fontSize: pickedCity === city ? "1.2rem" : "1.2rem",
-              background: pickedCity === city ? "rgba(197, 23, 197, 0.64)" : arrowIndex === idx ? "rgba(197, 23, 197, 0.62)" : "transparent",
-              borderRadius: "6px",
-              margin: "0.25rem 0",
-              padding: "0.5rem 0.5rem 0.5rem 0.25rem",
-              transition: "background 0.2s"
-            }}
-          >
-            <span style={{ width: 24, display: "inline-block", textAlign: "center" }}>
-              {arrowIndex === idx && animating ? "" : ""}
-            </span>
-            <span>{city}</span>
-          </li>
-        ))}
-      </ul>
-      <button onClick={handleRefresh} disabled={loading || animating}
+      {pickedCity && !animating && (
+        <p style={{ marginTop: "1rem", fontSize: "1.2rem" }}>
+          Blabolizer says:
+          <p style={{ fontSize: "1.5rem", fontWeight: "bold", marginTop: "1rem" }}>
+            {pickedCity}
+          </p>
+        </p>
+      )}
+      <button
+        onClick={handleRefresh}
+        disabled={loading || animating}
         style={{
           padding: "4px 9px",
           background: "#f357a86c",
@@ -88,15 +79,17 @@ export default function RandomCityPicker({ username, cities, fetchCities }: Prop
           fontWeight: "bold",
           fontSize: "1rem",
           boxShadow: "0 2px 8px #7b2ff244",
-          transition: "background 0.2s"
+          transition: "background 0.2s",
         }}
       >
         Refresh Cities
       </button>
-      <button onClick={handlePick} disabled={cities.length === 0 || loading || animating}
+      <button
+        onClick={handlePick}
+        disabled={cities.length === 0 || loading || animating}
         style={{
           padding: "4px 9px",
-          marginLeft: "15px",
+          margin: "15px",
           background: "#f357a8",
           color: "#fff",
           border: "none",
@@ -105,17 +98,40 @@ export default function RandomCityPicker({ username, cities, fetchCities }: Prop
           fontWeight: "bold",
           fontSize: "1rem",
           boxShadow: "0 2px 8px #f357a844",
-          transition: "background 0.2s"
-        }}>
+          transition: "background 0.2s",
+        }}
+      >
         {animating ? "Picking..." : "Pick a Random City"}
       </button>
-      {pickedCity && !animating && (
-
-        <p style={{ marginTop: "1rem" }} > Blabolizer says:
-          <p style={{ fontSize: "1.5rem", fontWeight: "bold", marginTop: "1rem" }}>
-            {pickedCity}    </p>
-        </p>
+      {statusMessage && (
+        <p style={{ marginTop: "1rem", color: "green" }}>{statusMessage}</p>
       )}
+      <h3>{username ? `${username}'s Cities` : "Cities"}</h3>
+      <CityList
+        cities={cities}
+        showDelete={true}
+        loadingAction={loadingAction} // <-- use loadingAction, not loading
+        username={username}
+        fetchCities={fetchCities}
+        setMessage={setStatusMessage} // <-- use this for status messages
+        setLoadingAction={setLoadingAction}
+        renderItem={(city, idx, handleDelete) =>
+          defaultRenderItem({
+            city,
+            idx,
+            router,
+            showDelete: true,
+            loadingAction: loadingAction, // <-- use loadingAction here too
+            handleDelete, // <-- use the handleDelete passed from CityList
+            children: (
+              <span style={{ width: 24, display: "inline-block", textAlign: "center" }}>
+                {arrowIndex === idx && animating ? "➡️" : ""}
+              </span>
+            ),
+          })
+        }
+      />
+
       {cities.length === 0 && !loading && <p>No cities found.</p>}
     </div>
   );
