@@ -40,18 +40,27 @@ export default function UsernameDisplay() {
   }, []);
 
   return (
-    <div
-      style={{
-        position: "absolute",
-        top: "10px",
-        right: "10px",
-        fontSize: "16px",
-        fontWeight: "bold",
-      }}
-      aria-live="polite"
-      aria-label={username ? `Logged in as ${username}` : "No user logged in"}
-    >
-      {username ? ` ${username}` : "No user logged in"}
+    <div style={{ display: "flex", justifyContent: "flex-end" }}>
+      <div
+        style={{
+          marginRight: "60px",
+          fontSize: "16px",
+          fontWeight: "bold",
+        }}
+        aria-live="polite"
+        aria-label={username ? `Logged in as ${username}` : "No user logged in"}
+      >
+        {username ? (
+        <>
+          Hello,{" "}
+          <span style={{ color: "#7b2",
+             textTransform: "capitalize", 
+          }}>{username}</span>
+        </>
+      ) : (
+        "No user logged in"
+      )}
+    </div>
     </div>
   );
 }

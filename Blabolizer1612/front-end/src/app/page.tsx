@@ -25,22 +25,17 @@ export default function Home() {
     };
   }, []);
 
-  if (!username) {
-    return <NamePage />;
-  }
-  if (!city) {
-    return (
-      <>
-        <UsernameDisplay />
-        <CityInput />
-      </>
-    );
-  }
   return (
     <div>
       <UsernameDisplay />
-      <p>Welcome, {username} from {city}!</p>
-      {/* Render the rest of your app here */}
+      {!username ? (
+        <NamePage onComplete={() => setUsername(localStorage.getItem("username"))} />
+      ) : (
+        <>
+          <CityInput />
+          <p>Welcome, {username} from {city}!</p>
+        </>
+      )}
     </div>
   );
 }

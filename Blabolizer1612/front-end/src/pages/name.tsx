@@ -2,11 +2,12 @@
 
 import { useState, useEffect, FormEvent } from 'react';
 
-export default function NamePage() {
+export default function NamePage({ onComplete }: { onComplete: () => void }) {
   const [name, setName] = useState<string>('');
   const [greeting, setGreeting] = useState<string>('');
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
+  const [fading, setFading] = useState(false);
 
   useEffect(() => {
     const savedName = localStorage.getItem('username');
@@ -34,27 +35,36 @@ export default function NamePage() {
         throw new Error(result.error || 'Something went wrong');
       }
 
-      if (result.user) {
-        setGreeting(`Welcome back, ${name}!`);
-      } else {
-        setGreeting(`Hello, ${name}!`);
-      }
-
-      localStorage.setItem('username', name);
-      window.dispatchEvent(new Event("usernameUpdate"));
-      setName('');
+      setGreeting(`Hello, ${name}!`);
       setError(null);
+      setLoading(false);
+
+    // After greeting is shown, start fade-out, then save username and notify parent
+      setTimeout(() => {
+        setFading(true);
+        setTimeout(() => {
+          localStorage.setItem('username', name);
+          window.dispatchEvent(new Event("usernameUpdate"));
+          onComplete();
+        }, 1000); // Match the transition duration
+      }, 1000); // Show greeting for 2 seconds before fading out
     } catch (error: unknown) {
       if (error instanceof Error) {
         setError(error.message);
       }
-    } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div style={{ textAlign: 'center', marginTop: '50px' }}>
+    <div
+      style={{
+        textAlign: 'center',
+        marginTop: '50px',
+        opacity: fading ? 0 : 1,
+        transition: 'opacity 1s ease'
+      }}
+    >
       <h1>Username</h1>
       <form onSubmit={handleSubmit} aria-label="Username form">
         <label htmlFor="username-input" style={{ display: "none" }}>
@@ -96,8 +106,8 @@ export default function NamePage() {
             @keyframes spin {
               0% { transform: rotate(0deg);}
               100% { transform: rotate(360deg);}
-            }
-          `}</style>
+            `}
+          </style>
           <p>Checking username...</p>
         </div>
       )}

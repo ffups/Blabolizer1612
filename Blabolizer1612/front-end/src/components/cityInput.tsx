@@ -149,7 +149,7 @@ export default function CityInput() {
           aria-label="Save city"
           disabled={loading}
         >
-          {loading ? "Saving..." : "Save"}
+          {loading ? "Booping..." : "Boop"}
         </button>
       </form>
       {loading && (
