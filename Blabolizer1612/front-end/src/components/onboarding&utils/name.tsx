@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, FormEvent } from 'react';
-import ProfilePicSelector from "@/components/ProfilePicSelector";
+import ProfilePicSelector from "@/components/onboarding&utils/ProfilePicSelector";
 
 const profilePics = [
   "/profile1.png",

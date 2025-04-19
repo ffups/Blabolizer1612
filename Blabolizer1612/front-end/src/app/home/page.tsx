@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import NamePage from "../../components/name";
-import CityInput from "@/components/cityInput";
+import NamePage from "../../components/onboarding&utils/name";
+import CityManager from "@/components/city stuff/CityManager";
 
 export default function Home() {
   const [username, setUsername] = useState<string | null>(null);
@@ -25,7 +25,7 @@ export default function Home() {
         <NamePage onComplete={() => setUsername(localStorage.getItem("username"))} />
       ) : (
         <>
-          <CityInput />
+          <CityManager />
         </>
       )}
     </div>

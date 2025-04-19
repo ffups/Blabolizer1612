@@ -1,19 +1,17 @@
-import { useState, useEffect, useCallback } from "react";
+"use client";
 
-export default function RandomCityPicker() {
-  const [username, setUsername] = useState<string | null>(null);
+import { useState, useCallback } from "react";
+
+type Props = {
+  username: string | null;
+  cities: string[];
+  error: string | null;
+  fetchCities: () => Promise<void>;
+};
+export default function RandomCityPicker({ username }: Props) {
   const [cities, setCities] = useState<string[]>([]);
-  const [pickedCity, setPickedCity] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
-
-  // Update username from localStorage on mount and when "usernameUpdate" event fires
-  useEffect(() => {
-    const updateUsername = () => setUsername(localStorage.getItem("username"));
-    updateUsername();
-    window.addEventListener("usernameUpdate", updateUsername);
-    return () => window.removeEventListener("usernameUpdate", updateUsername);
-  }, []);
 
   const fetchCities = useCallback(async () => {
     if (!username) {
@@ -26,38 +24,31 @@ export default function RandomCityPicker() {
     try {
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_API_URL}api/get?username=${encodeURIComponent(username)}`,
-        { method: 'GET' }
+        { method: "GET" }
       );
-
-      if (!response.ok) {
-        throw new Error('Failed to fetch cities.');
-      }
-
+      if (!response.ok) throw new Error("Failed to fetch cities.");
       const data = await response.json();
       setCities(data.cities);
-    } catch (error: unknown) {
-      if (error instanceof Error) {
-        setError(error.message);
+    } catch (err) {
+      if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError("Unknown error");
       }
     } finally {
       setLoading(false);
     }
   }, [username]);
 
-  useEffect(() => {
-    if (username) {
-      fetchCities();
-    }
-  }, [username, fetchCities]);
-
   const handlePick = () => {
     if (cities.length === 0) {
-      setPickedCity(null);
-      return;
+      return null;
     }
     const randomIndex = Math.floor(Math.random() * cities.length);
-    setPickedCity(cities[randomIndex]);
+    return cities[randomIndex];
   };
+
+  const pickedCity = handlePick();
 
   return (
     <div>

@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import { usePathname } from "next/navigation";
-import Footer from "@/components/Footer";
+import Footer from "@/components/header&footer/Footer";
 
 export default function ConsentBanner({
   visible,

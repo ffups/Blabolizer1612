@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useEffect, useState } from "react";
-import ProfilePicSelector from "@/components/ProfilePicSelector";
+import ProfilePicSelector from "@/components/onboarding&utils/ProfilePicSelector";
 import { useUsername } from "@/context/UsernameContext";
 
 const profilePics = [

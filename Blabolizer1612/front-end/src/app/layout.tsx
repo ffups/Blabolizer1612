@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import ClientLayout from "./ClientLayout";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
+import Header from "@/components/header&footer/Header";
+import Footer from "@/components/header&footer/Footer";
 import { UsernameProvider } from "@/context/UsernameContext";
 
 export const metadata: Metadata = {
