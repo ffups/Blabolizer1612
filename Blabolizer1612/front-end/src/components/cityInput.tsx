@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 
 export default function CityInput() {
   const [city, setCity] = useState<string>("");
@@ -13,7 +13,7 @@ export default function CityInput() {
     setCity(event.target.value);
   };
 
-  const fetchCities = async () => {
+  const fetchCities = useCallback(async () => {
     if (!username) {
       setMessage("No username found. Please log in first.");
       setCities([]);
@@ -36,7 +36,7 @@ export default function CityInput() {
         setMessage(error.message);
       }
     }
-  };
+  }, [username]);
 
   const handleSave = async (e?: React.FormEvent) => {
     if (e) e.preventDefault(); // Prevent form reload
@@ -125,7 +125,7 @@ export default function CityInput() {
     if (username) {
       fetchCities();
     }
-  }, [username]);
+  }, [username, fetchCities]);
 
   return (
     <div style={{ margin: "20px" }}>
