@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 
 type Props = {
   username: string | null;
@@ -13,6 +14,8 @@ export default function CityInput({ username, cities, error, fetchCities }: Prop
   const [city, setCity] = useState("");
   const [message, setMessage] = useState<string | null>(null);
   const [loadingAction, setLoadingAction] = useState<"add" | "delete" | null>(null);
+
+  const router = useRouter();
 
   // Auto-clear message after 3 seconds
   useEffect(() => {
@@ -91,6 +94,7 @@ export default function CityInput({ username, cities, error, fetchCities }: Prop
       <p>Ever wanted to travel but unsure where to go next?</p>
       <p>This tool aims to help this pressing problem by generating a random city from a list curated by you!</p>
       <p>All you need to do to get started is create a list of cities you would like to visit! Or choose from a preset :)</p>
+      <p>hint: you can press on the city to get more information on it!</p>
 
       {/* Add city input form */}
       <form onSubmit={handleAddCity} style={{ marginBottom: "16px" }}>
@@ -124,7 +128,7 @@ export default function CityInput({ username, cities, error, fetchCities }: Prop
           {error}
         </p>
       )}
-        {message && (
+      {message && (
         <p style={{ marginTop: "10px", color: "green" }} aria-live="polite">
           {message}
         </p>
@@ -134,9 +138,22 @@ export default function CityInput({ username, cities, error, fetchCities }: Prop
       <ul aria-label="List of added cities">
         {cities.map((city, index) => (
           <li key={index}>
-            {city}{" "}
+            <span
+              style={{ color: "#0070f3", textDecoration: "underline", cursor: "pointer" }}
+              onClick={() => {
+                if (window.confirm(`Go to the page for "${city}"?`)) {
+                  router.push(`/city/${encodeURIComponent(city)}`);
+                }
+              }}
+            >
+              {city}
+            </span>{" "}
             <button
-              onClick={() => handleDelete(city)}
+              onClick={() => {
+                if (window.confirm(`Are you sure you want to delete "${city}"?`)) {
+                  handleDelete(city);
+                }
+              }}
               style={{
                 marginLeft: "10px",
                 padding: "2px 5px",

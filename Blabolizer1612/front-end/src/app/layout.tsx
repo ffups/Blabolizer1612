@@ -18,13 +18,15 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
+
         <UsernameProvider>
       <Header/>
 
           <ClientLayout>{children}</ClientLayout>
         </UsernameProvider>
-      </body>
       <Footer/>
+
+      </body>
     </html>
   );
 }

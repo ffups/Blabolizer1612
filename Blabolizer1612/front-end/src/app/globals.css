@@ -9,7 +9,10 @@
     --foreground: #ededed;
   }
 }
-
+/* In your global CSS */
+body {
+  padding-top: 80px; /* Adjust to your header height */
+}
 html,
 body {
   max-width: 100vw;

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState } from "react";
 
 type Props = {
   username: string | null;
@@ -8,47 +8,25 @@ type Props = {
   error: string | null;
   fetchCities: () => Promise<void>;
 };
-export default function RandomCityPicker({ username }: Props) {
-  const [cities, setCities] = useState<string[]>([]);
-  const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string | null>(null);
 
-  const fetchCities = useCallback(async () => {
-    if (!username) {
-      setError("No username found. Please log in first.");
-      setCities([]);
-      return;
-    }
-    setLoading(true);
-    setError(null);
-    try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}api/get?username=${encodeURIComponent(username)}`,
-        { method: "GET" }
-      );
-      if (!response.ok) throw new Error("Failed to fetch cities.");
-      const data = await response.json();
-      setCities(data.cities);
-    } catch (err) {
-      if (err instanceof Error) {
-        setError(err.message);
-      } else {
-        setError("Unknown error");
-      }
-    } finally {
-      setLoading(false);
-    }
-  }, [username]);
+export default function RandomCityPicker({ username, cities, error, fetchCities }: Props) {
+  const [pickedCity, setPickedCity] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
 
   const handlePick = () => {
     if (cities.length === 0) {
-      return null;
+      setPickedCity(null);
+      return;
     }
     const randomIndex = Math.floor(Math.random() * cities.length);
-    return cities[randomIndex];
+    setPickedCity(cities[randomIndex]);
   };
 
-  const pickedCity = handlePick();
+  const handleRefresh = async () => {
+    setLoading(true);
+    await fetchCities();
+    setLoading(false);
+  };
 
   return (
     <div>
@@ -60,7 +38,7 @@ export default function RandomCityPicker({ username }: Props) {
           <li key={idx}>{city}</li>
         ))}
       </ul>
-      <button onClick={fetchCities} disabled={loading} style={{ marginRight: "10px" }}>
+      <button onClick={handleRefresh} disabled={loading} style={{ marginRight: "10px" }}>
         Refresh Cities
       </button>
       <button onClick={handlePick} disabled={cities.length === 0 || loading}>

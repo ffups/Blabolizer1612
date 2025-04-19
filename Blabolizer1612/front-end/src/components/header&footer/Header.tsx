@@ -18,6 +18,7 @@ export default function Header() {
   return (
     <header
       style={{
+        top: 0,  
         width: "100%",
         padding: "1rem 0",
         background: "rgba(122, 47, 242, 0)",
@@ -26,7 +27,6 @@ export default function Header() {
         justifyContent: "center",
         alignItems: "center",
         boxShadow: "0 2px 8px rgba(0, 0, 0, 0)",
-        marginBottom: "2rem",
       }}
       aria-label="Site header"
     >
@@ -55,37 +55,37 @@ export default function Header() {
         </Link>
         {/* Add more buttons/links here as needed */}
         <Link
-  href="/profile"
-  aria-label="Go to profile page"
-  style={{
-    color: "#fff",
-    textDecoration: "none",
-    fontWeight: "bold",
-    fontSize: "1.2rem",
-    padding: "0.5rem 1.5rem",
-    borderRadius: "6px",
-    background: "rgba(25,98,112,0.7)",
-    display: "flex",
-    alignItems: "center",
-    gap: "0.75rem"
-  }}
->
-  {profilePic && (
-    <img
-      src={profilePic}
-      alt="Profile"
-      style={{
-        width: 24,
-        height: 24,
-        borderRadius: "50%",
-        objectFit: "cover",
-        border: "2px solid #fff",
-        background: "#eee"
-      }}
-    />
-  )}
- {username || "Not set"}
-</Link>
+          href="/profile"
+          aria-label="Go to profile page"
+          style={{
+            color: "#fff",
+            textDecoration: "none",
+            fontWeight: "bold",
+            fontSize: "1.2rem",
+            padding: "0.5rem 1.5rem",
+            borderRadius: "6px",
+            background: "rgba(25,98,112,0.7)",
+            display: "flex",
+            alignItems: "center",
+            gap: "0.75rem"
+          }}
+        >
+          {profilePic && (
+            <img
+              src={profilePic}
+              alt="Profile"
+              style={{
+                width: 24,
+                height: 24,
+                borderRadius: "50%",
+                objectFit: "cover",
+                border: "2px solid #fff",
+                background: "#eee"
+              }}
+            />
+          )}
+          {username || "Not set"}
+        </Link>
 
       </nav>
     </header>
