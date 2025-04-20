@@ -1,4 +1,9 @@
+import setCors from '../src/utils/cors.js'; // or require if using CommonJS
+
+
 export default async function handler(req, res) {
+  setCors(res);
+
   const { city } = req.query;
   const apiKey = process.env.OPENWEATHER_API_KEY; // Store your key in .env.local
 
