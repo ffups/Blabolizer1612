@@ -104,8 +104,28 @@ export default function CityInput({ username, cities, error, fetchCities }: Prop
   return (
     <div style={{ margin: "20px" }}>
       {/* Add city input form */}
+      <style>
+      {`
+        @media (max-width: 600px) {
+          
+          .city-input-field {
+            width: 50% !important;
+            min-width: 0 !important;
+            max-width: 50% !important;
+            font-size: 1.3rem !important;
+          }
+          .city-input-btn {
+            width: 10% !important;
+            margin: 0 !important;
+            font-size: 1.5rem !important;
+          }
+        }
+      `}
+    </style>
+
       <form
         onSubmit={handleAddCity}
+
         style={{
           marginBottom: "16px",
           display: "flex",           // <-- Add this
@@ -121,6 +141,8 @@ export default function CityInput({ username, cities, error, fetchCities }: Prop
           placeholder="Enter a city"
           disabled={loadingAction === "add" || loadingAction === "delete"}
           autoFocus // ensure autofocus on remount
+          className="city-input-field"
+
           style={{
             fontSize: "2rem",
             fontWeight: 700,
@@ -164,6 +186,8 @@ export default function CityInput({ username, cities, error, fetchCities }: Prop
           type="submit"
           disabled={loadingAction === "add" || loadingAction === "delete" || !city.trim()}
           aria-label="Add City"
+          className="city-input-btn"
+
           style={{
             fontSize: "2rem",
             height: "48px",

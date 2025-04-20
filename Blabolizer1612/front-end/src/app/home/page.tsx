@@ -45,7 +45,7 @@ export default function Home() {
         <div
           style={{
             maxWidth: 500,
-            margin: "40px auto",
+            margin: "0 auto",
             padding: "0 24px",
             borderRadius: 8,
             boxShadow: "0 2px 8px rgba(0,0,0,0.07)",

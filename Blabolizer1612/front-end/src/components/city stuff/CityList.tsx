@@ -69,7 +69,20 @@ export default function CityList({
         paddingBottom: "8px",
       }}
     >
+       <style>
+      {`
+        @media (max-width: 600px) {
+          .city-list-grid {
+            min-width: 0 !important;
+            max-width: 100vw !important;
+            gap: 8px !important;
+          }
+        }
+      `}
+    </style>
       <div
+            className="city-list-grid"
+
         style={{
           display: "grid",
           gridTemplateColumns: "repeat(2, minmax(120px, 1fr))",
