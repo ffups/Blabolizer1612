@@ -2,6 +2,8 @@ const saveNameToDatabase = require('../src/db/saveNameToDatabase');
 const saveCityToDatabase = require("../src/db/saveCityToDatabase");
 const getCities = require("../src/apicalls/get");
 const deleteCity = require("../src/apicalls/delete");
+const weatherHandler = require("../src/apicalls/weather");
+const forecastHandler = require("../src/apicalls/forecast");
 
 const setCors = require('../src/utils/cors'); // adjust path as needed
 
@@ -48,7 +50,15 @@ module.exports = (req, res) => {
   if (req.method === 'DELETE' && req.url === '/delete') {
     return deleteCity(req, res);
   }
+// /weather
+if (req.method === 'GET' && req.url.startsWith('/weather')) {
+  return weatherHandler(req, res);
+}
 
+// /forecast
+if (req.method === 'GET' && req.url.startsWith('/forecast')) {
+  return forecastHandler(req, res);
+}
   // 404 fallback
   res.setHeader('Access-Control-Allow-Origin', 'https://blabolizer1612.vercel.app');
   res.setHeader('Access-Control-Allow-Methods', 'GET,POST,DELETE,OPTIONS');
