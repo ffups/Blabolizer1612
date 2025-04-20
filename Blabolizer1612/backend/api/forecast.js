@@ -1,9 +1,18 @@
 import setCors from '../src/utils/cors.js'; // or require if using CommonJS
+import rateLimit from '../src/utils/rateLimit.js';
+import hashIp from '../src/utils/hash.js';
 
 
 export default async function handler(req, res) {
   setCors(res);
-
+  
+ // Rate limiting
+ const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+ const hashedKey = hashIp(ip);
+ const allowed = await rateLimit(hashedKey, 15, 60); // 15 requests per 60 seconds
+ if (!allowed) {
+   return res.status(429).json({ error: 'Too many requests, please try again in a minute.' });
+ }
     const { city } = req.query;
     const apiKey = process.env.OPENWEATHER_API_KEY;
   

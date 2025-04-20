@@ -17,7 +17,7 @@ module.exports = (req, res) => {
   // Rate limiting
   const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
   const hashedKey = hashIp(ip);
-  rateLimit(hashedKey, 5, 60).then(allowed => {
+  rateLimit(hashedKey, 15, 60).then(allowed => {
     if (!allowed) {
       return res.status(429).json({ error: 'Too many requests, please try again later.' });
     }
