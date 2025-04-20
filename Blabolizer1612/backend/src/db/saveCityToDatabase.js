@@ -8,7 +8,7 @@ module.exports = async (req, res) => {
   const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
   const hashedKey = hashIp(ip);
 
-  const allowed = await rateLimit(hashedKey, 15, 60); // 5 requests per 60 seconds
+  const allowed = await rateLimit(hashedKey, 15, 60); // 15 requests per 60 seconds
   if (!allowed) {
     return res.status(429).json({ error: 'Too many requests, please try again later.' });
   }
@@ -17,27 +17,28 @@ module.exports = async (req, res) => {
     return res.status(405).json({ message: "Method not allowed" });
   }
 
-  let { username, city } = req.body;
+  let { username, cities } = req.body;
 
-  if (!username || !city) {
-    return res.status(400).json({ message: "Username and city are required." });
+  if (!username || !Array.isArray(cities) || cities.length === 0) {
+    return res.status(400).json({ message: "Username and cities array are required." });
   }
 
   // Sanitize user input
   username = sanitizeInput(username);
-  city = sanitizeInput(city);
+  const sanitizedCities = cities.map(city => sanitizeInput(city));
 
   try {
-    // Insert the city linked to the username
+    // Insert all cities linked to the username
+    const inserts = sanitizedCities.map(city => ({ username, city }));
     const { error } = await supabase
       .from("cities")
-      .insert([{ username, city }]);
+      .insert(inserts);
 
     if (error) {
       throw error;
     }
 
-    res.status(201).json({ message: "city saved successfully." });
+    res.status(201).json({ message: "Cities saved successfully." });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

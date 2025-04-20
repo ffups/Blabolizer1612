@@ -18,6 +18,7 @@ export default function CityInput({ username, cities, error, fetchCities }: Prop
   const inputRef = useRef<HTMLInputElement>(null);
   const [fade, setFade] = useState(false);
   const [shouldFocusInput, setShouldFocusInput] = useState(false);
+  const [showTip, setShowTip] = useState(false);
 
   useEffect(() => {
     if (shouldFocusInput && inputRef.current) {
@@ -66,11 +67,22 @@ export default function CityInput({ username, cities, error, fetchCities }: Prop
       alert("No username found. Please log in first.");
       return;
     }
-    // Prevent duplicate (case-insensitive)
-    if (cities.some(c => c.trim().toLowerCase() === city.trim().toLowerCase())) {
-      setMessage("City already added.");
+
+    // Split input by commas, trim, and filter out empty entries
+    const cityList = city
+      .split(',')
+      .map(c => c.trim())
+      .filter(Boolean);
+
+    // Prevent duplicates (case-insensitive, against already added cities)
+    const newCities = cityList.filter(
+      c => !cities.some(existing => existing.trim().toLowerCase() === c.toLowerCase())
+    );
+    if (newCities.length === 0) {
+      setMessage("All cities already added.");
       return;
     }
+
     try {
       setLoadingAction("add");
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}api/saveCityToDatabase`, {
@@ -78,7 +90,7 @@ export default function CityInput({ username, cities, error, fetchCities }: Prop
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ city: city.trim(), username }),
+        body: JSON.stringify({ cities: newCities, username }), // send as array
       });
 
       if (!response.ok) {
@@ -103,7 +115,6 @@ export default function CityInput({ username, cities, error, fetchCities }: Prop
 
   return (
     <div style={{ margin: "20px" }}>
-      {/* Add city input form */}
       <style>
       {`
         @media (max-width: 600px) {
@@ -115,7 +126,7 @@ export default function CityInput({ username, cities, error, fetchCities }: Prop
             font-size: 1.3rem !important;
           }
           .city-input-btn {
-            width: 10% !important;
+            width: 15% !important;
             margin: 0 !important;
             font-size: 1.5rem !important;
           }
@@ -130,9 +141,74 @@ export default function CityInput({ username, cities, error, fetchCities }: Prop
           marginBottom: "16px",
           display: "flex",           // <-- Add this
           alignItems: "center",      // <-- And this for vertical alignment
-          gap: "0",                  // <-- Optional: remove gap if you want them flush
+          gap: "0", 
+          position: "relative", // Needed for absolute positioning of the tip
+          // <-- Optional: remove gap if you want them flush
         }}
       >
+           <button
+          type="button"
+          onClick={() => setShowTip((v) => !v)}
+          style={{
+            marginLeft: 12,
+            color: "#b2f2bb",
+            background: "rgba(25, 97, 112, 0.15)",
+            border: "none",
+            borderRadius: "8px",
+            fontSize: "1rem",
+            fontWeight: 500,
+            whiteSpace: "nowrap",
+            opacity: 0.85,
+            padding: "8px 14px",
+            cursor: "pointer",
+            transition: "background 0.2s",
+            position: "relative",
+            zIndex: 2,
+          }}
+        >
+          ?
+        </button>
+        {showTip && (
+          <div
+            style={{
+              position: "absolute",
+              left: "10%",
+              top: "50%",
+              transform: "translateY(-50%)",
+              marginLeft: 16,
+              background: "#fff",
+              color: "#196270",
+              borderRadius: "12px",
+              boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
+              padding: "14px 18px",
+              fontSize: "1rem",
+              fontWeight: 500,
+              minWidth: 220,
+              maxWidth: 320,
+              whiteSpace: "normal",
+              zIndex: 10,
+              border: "1px solid #b2f2bb",
+            }}
+            onClick={() => setShowTip(false)}
+          >
+            You can add multiple cities at once by separating them with commas<br />
+            <span
+              style={{
+                position: "absolute",
+                left: -16,
+                top: "50%",
+                transform: "translateY(-50%)",
+                width: 0,
+                height: 0,
+                borderTop: "10px solid transparent",
+                borderBottom: "10px solid transparent",
+                borderRight: "16px solid #fff",
+                filter: "drop-shadow(-1px 0 1px #b2f2bb)",
+                zIndex: 11,
+              }}
+            />
+          </div>
+        )}
         <input
           ref={inputRef}
           type="text"
@@ -244,6 +320,7 @@ export default function CityInput({ username, cities, error, fetchCities }: Prop
     `}
           </style>
         </button>
+      
       </form>
 
       {loadingAction === "add" && (
