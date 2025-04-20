@@ -120,7 +120,7 @@ export default function UserProfile() {
     localStorage.setItem("username", newName);
 
     try {
-      const res = await fetch("/api/post", {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}api/post`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name: newName }),
