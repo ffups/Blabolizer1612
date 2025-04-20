@@ -4,11 +4,9 @@ import { usePathname } from "next/navigation";
 import Footer from "@/components/header&footer/Footer";
 
 export default function ConsentBanner({
-  visible,
   onConsent,
   onDecline,
 }: {
-  visible: boolean;
   onConsent: () => void;
   onDecline: () => void;
 }) {
@@ -17,7 +15,6 @@ export default function ConsentBanner({
 
   // Hide banner on privacy policy page
   if (pathname === "/privacy") return null;
-  if (!visible) return null;
 
   const handleClose = (callback?: () => void) => {
     setFading(true);

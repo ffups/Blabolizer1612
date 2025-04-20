@@ -10,10 +10,9 @@ export default function Footer() {
       padding: "1rem",
       width: "100%",
       boxShadow: "0 -2px 8px rgba(0,0,0,0.04)",
-      marginTop: "auto", // key for sticky-to-bottom in flex layouts
-      position: "static", // not fixed!
       left: undefined,
-      bottom: 0,
+      position: "fixed", // Add this line
+        bottom: 0,         // Stick to the bottom
       zIndex: 100,
     }}
       aria-label="Site footer"

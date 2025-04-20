@@ -50,7 +50,10 @@ export default function UserProfile() {
   // Save to context and localStorage only when confirmed
   const handleNameSave = () => {
     if (newName.trim().length === 0) {
-      setNewName(username); // revert to previous username
+      // Always revert to the latest value in localStorage
+      const stored = localStorage.getItem("username") || "";
+      setNewName(stored);
+      setUsername(stored);
       setEditing(false);
       return;
     }
@@ -73,22 +76,32 @@ export default function UserProfile() {
         <div style={{ minWidth: 0, flex: 1, maxWidth: 300, display: "flex", alignItems: "center" }}>
           {editing ? (
             <>
-              <input
-                ref={inputRef}
-                value={newName}
-                onChange={e => {
-                  setNewName(e.target.value);
-                  if (e.target.value.trim().length > 0) {
-                    setUsername(e.target.value);
-                  }
-                }}
-                onBlur={handleBlur}
-                onKeyDown={e => {
-                  if (e.key === "Enter" || e.key === "Escape") {
-                    e.preventDefault();
-                    handleNameSave();
-                  }
-                }}
+             <input
+  ref={inputRef}
+  value={newName}
+  onChange={e => {
+    // Only allow non-empty usernames to update everywhere
+    const value = e.target.value;
+    setNewName(value);
+    if (value.trim().length > 0) {
+      setUsername(value);
+      localStorage.setItem("username", value);
+      window.dispatchEvent(new Event("usernameUpdate"));
+    }
+  }}
+  onBlur={handleBlur}
+  onKeyDown={e => {
+    if (e.key === "Enter" || e.key === "Escape") {
+      e.preventDefault();
+      if (newName.trim().length > 0) {
+        handleNameSave();
+      } else {
+        // Revert to previous username if empty
+        setNewName(username);
+        setEditing(false);
+      }
+    }
+  }}
                 autoFocus
                 aria-label="Edit username"
                 style={{

@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useState, useEffect } from "react";
 
 const UsernameContext = createContext<{
   username: string;
@@ -8,9 +8,12 @@ const UsernameContext = createContext<{
 }>({ username: "", setUsername: () => {} });
 
 export function UsernameProvider({ children }: { children: React.ReactNode }) {
-  const [username, setUsername] = useState(
-    () => (typeof window !== "undefined" ? localStorage.getItem("username") || "" : "")
-  );
+  const [username, setUsername] = useState("");
+
+  useEffect(() => {
+    const stored = localStorage.getItem("username");
+    if (stored) setUsername(stored);
+  }, []);
 
   return (
     <UsernameContext.Provider value={{ username, setUsername }}>

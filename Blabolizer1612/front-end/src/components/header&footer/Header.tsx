@@ -2,18 +2,19 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { useUsername } from "@/context/UsernameContext";
 import Image from "next/image";
 
 export default function Header() {
   const [profilePic, setProfilePic] = useState<string | null>(null);
-  const [mounted, setMounted] = useState(false);
-  const { username } = useUsername();
+  const [headerUsername, setHeaderUsername] = useState<string | null>(null);
 
   useEffect(() => {
-    setMounted(true);
     setProfilePic(localStorage.getItem("profilePic"));
-    const handleUpdate = () => setProfilePic(localStorage.getItem("profilePic"));
+    setHeaderUsername(localStorage.getItem("username"));
+    const handleUpdate = () => {
+      setProfilePic(localStorage.getItem("profilePic"));
+      setHeaderUsername(localStorage.getItem("username"));
+    };
     window.addEventListener("usernameUpdate", handleUpdate);
     return () => window.removeEventListener("usernameUpdate", handleUpdate);
   }, []);
@@ -73,7 +74,7 @@ export default function Header() {
             gap: "0.75rem",
           }}
         >
-          {mounted && profilePic && (
+          {profilePic && (
             <Image
               src={profilePic}
               alt="Profile"
@@ -87,7 +88,7 @@ export default function Header() {
               }}
             />
           )}
-          {username || "Not set"}
+          {headerUsername || "Not set"}
         </Link>
       </nav>
     </header>
