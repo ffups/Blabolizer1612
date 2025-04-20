@@ -80,6 +80,7 @@ export default function CityList({
           alignItems: "stretch",
         }}
       >
+        
         {cities.map((city, idx) =>
          renderItem
             ? renderItem(city, idx, handleDelete)
