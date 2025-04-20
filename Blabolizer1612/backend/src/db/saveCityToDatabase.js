@@ -40,6 +40,15 @@ module.exports = async (req, res) => {
 
     res.status(201).json({ message: "Cities saved successfully." });
   } catch (error) {
+    if (
+      error.message &&
+      error.message.includes('foreign key constraint') &&
+      error.message.includes('cities_username_fkey')
+    ) {
+      return res.status(400).json({
+        message: "The specified user does not exist. Please create the user before adding cities."
+      });
+    }
     res.status(500).json({ message: error.message });
   }
 };
