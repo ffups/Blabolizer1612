@@ -23,10 +23,14 @@ export default function ConsentBanner({
       if (callback) callback();
     }, 700);
   };
-
-  const accept = () => handleClose(onConsent);
-  const decline = () => handleClose(onDecline);
-
+  const accept = () => {
+    window.dispatchEvent(new Event("consentGiven"));
+    handleClose(onConsent);
+  };
+  const decline = () => {
+    window.dispatchEvent(new Event("consentGiven"));
+    handleClose(onDecline);
+  };
   return (
     <div
       style={{

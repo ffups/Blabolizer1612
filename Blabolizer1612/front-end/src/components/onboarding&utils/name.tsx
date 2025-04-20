@@ -26,6 +26,16 @@ export default function NamePage({ onComplete }: { onComplete: () => void }) {
   }, []);
 
   useEffect(() => {
+    const focusInput = () => {
+      setTimeout(() => {
+        if (inputRef.current) inputRef.current.focus();
+      }, 50); // slight delay to ensure DOM is ready
+    };
+    window.addEventListener("consentGiven", focusInput);
+    return () => window.removeEventListener("consentGiven", focusInput);
+  }, []);
+
+  useEffect(() => {
     if (typeof window !== "undefined") {
       const savedName = localStorage.getItem('username');
       if (savedName) {

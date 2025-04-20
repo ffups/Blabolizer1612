@@ -2,17 +2,38 @@
 
 import { createContext, useContext, useState, useEffect } from "react";
 
-const UsernameContext = createContext<{
+type UsernameContextType = {
   username: string;
   setUsername: (name: string) => void;
-}>({ username: "", setUsername: () => {} });
+};
+
+const UsernameContext = createContext<UsernameContextType>({
+  username: "",
+  setUsername: () => {},
+});
 
 export function UsernameProvider({ children }: { children: React.ReactNode }) {
   const [username, setUsername] = useState("");
 
   useEffect(() => {
-    const stored = localStorage.getItem("username");
-    if (stored) setUsername(stored);
+    const syncUsername = () => {
+      const stored = localStorage.getItem("username") || "";
+      setUsername(stored);
+    };
+
+    // Initial load
+    syncUsername();
+
+    // Listen for custom event and storage changes
+    window.addEventListener("usernameUpdate", syncUsername);
+    window.addEventListener("storage", (e) => {
+      if (e.key === "username") syncUsername();
+    });
+
+    return () => {
+      window.removeEventListener("usernameUpdate", syncUsername);
+      window.removeEventListener("storage", syncUsername);
+    };
   }, []);
 
   return (

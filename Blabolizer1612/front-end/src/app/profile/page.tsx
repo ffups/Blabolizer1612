@@ -3,6 +3,7 @@
 import { useRef, useEffect, useState } from "react";
 import ProfilePicSelector from "@/components/onboarding&utils/ProfilePicSelector";
 import { useUsername } from "@/context/UsernameContext";
+import { usePathname } from "next/navigation";
 
 const profilePics = [
   "/profile1.png",
@@ -18,10 +19,18 @@ export default function UserProfile() {
   const { username, setUsername } = useUsername();
   const spanRef = useRef<HTMLSpanElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const pathname = usePathname();
 
   useEffect(() => {
-    setNewName(username); // or get from localStorage if needed
-  }, [username]);
+    // On first mount, prefer localStorage if available
+    const stored = localStorage.getItem("username");
+    if (stored) {
+      setNewName(stored);
+    } else {
+      setNewName(username);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     // Only runs on client
@@ -32,6 +41,46 @@ export default function UserProfile() {
   useEffect(() => {
     setSelectedPic(localStorage.getItem("profilePic") || profilePics[0]);
   }, [username]);
+
+  useEffect(() => {
+    const handleUsernameUpdate = () => {
+      const stored = localStorage.getItem("username") || "";
+      if (!editing) setNewName(stored);
+    };
+    window.addEventListener("usernameUpdate", handleUsernameUpdate);
+    return () => window.removeEventListener("usernameUpdate", handleUsernameUpdate);
+  }, [editing]);
+
+  useEffect(() => {
+    // Whenever the route changes to this page, update newName
+    if (pathname === "/profile") {
+      const stored = localStorage.getItem("username");
+      setNewName(stored ?? username);
+    }
+  }, [pathname, username]);
+
+  useEffect(() => {
+    const syncUsername = () => {
+      const stored = localStorage.getItem("username") || "";
+      if (!editing) setNewName(stored);
+    };
+
+    // Listen for changes from other tabs/windows
+    const handleStorage = (e: StorageEvent) => {
+      if (e.key === "username") {
+        syncUsername();
+      }
+    };
+
+    // Listen for changes in this tab
+    window.addEventListener("storage", handleStorage);
+    window.addEventListener("usernameUpdate", syncUsername);
+
+    return () => {
+      window.removeEventListener("storage", handleStorage);
+      window.removeEventListener("usernameUpdate", syncUsername);
+    };
+  }, [editing]);
 
   // Adjust input width to fit content
   useEffect(() => {
@@ -45,8 +94,12 @@ export default function UserProfile() {
     setSelectedPic(pic);
   };
 
-  const handleEdit = () => setEditing(true);
-
+  const handleEdit = () => {
+    // Always get the latest username from localStorage or context
+    const stored = localStorage.getItem("username");
+    setNewName(stored ?? username);
+    setEditing(true);
+  };
   // Save to context and localStorage only when confirmed
   const handleNameSave = () => {
     if (newName.trim().length === 0) {
@@ -61,7 +114,7 @@ export default function UserProfile() {
     setUsername(newName);
     localStorage.setItem("username", newName);
   };
-  
+
   const handleBlur = () => {
     if (ignoreBlurRef.current) {
       ignoreBlurRef.current = false;
@@ -76,32 +129,32 @@ export default function UserProfile() {
         <div style={{ minWidth: 0, flex: 1, maxWidth: 300, display: "flex", alignItems: "center" }}>
           {editing ? (
             <>
-             <input
-  ref={inputRef}
-  value={newName}
-  onChange={e => {
-    // Only allow non-empty usernames to update everywhere
-    const value = e.target.value;
-    setNewName(value);
-    if (value.trim().length > 0) {
-      setUsername(value);
-      localStorage.setItem("username", value);
-      window.dispatchEvent(new Event("usernameUpdate"));
-    }
-  }}
-  onBlur={handleBlur}
-  onKeyDown={e => {
-    if (e.key === "Enter" || e.key === "Escape") {
-      e.preventDefault();
-      if (newName.trim().length > 0) {
-        handleNameSave();
-      } else {
-        // Revert to previous username if empty
-        setNewName(username);
-        setEditing(false);
-      }
-    }
-  }}
+              <input
+                ref={inputRef}
+                value={newName}
+                onChange={e => {
+                  // Only allow non-empty usernames to update everywhere
+                  const value = e.target.value;
+                  setNewName(value);
+                  if (value.trim().length > 0) {
+                    setUsername(value);
+                    localStorage.setItem("username", value);
+                    window.dispatchEvent(new Event("usernameUpdate"));
+                  }
+                }}
+                onBlur={handleBlur}
+                onKeyDown={e => {
+                  if (e.key === "Enter" || e.key === "Escape") {
+                    e.preventDefault();
+                    if (newName.trim().length > 0) {
+                      handleNameSave();
+                    } else {
+                      // Revert to previous username if empty
+                      setNewName(username);
+                      setEditing(false);
+                    }
+                  }
+                }}
                 autoFocus
                 aria-label="Edit username"
                 style={{
