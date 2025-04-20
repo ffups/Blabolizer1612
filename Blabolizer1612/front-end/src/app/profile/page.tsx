@@ -4,6 +4,7 @@ import { useRef, useEffect, useState } from "react";
 import ProfilePicSelector from "@/components/onboarding&utils/ProfilePicSelector";
 import { useUsername } from "@/context/UsernameContext";
 import { usePathname } from "next/navigation";
+import Image from "next/image";
 
 const profilePics = [
   "/profile1.png",
@@ -124,7 +125,7 @@ export default function UserProfile() {
   };
 
   return (
-    <div style={{ maxWidth: 500, margin: "40px auto", padding: 24, borderRadius: 8, boxShadow: "0 2px 8px rgba(0,0,0,0.07)" }}>
+    <div style={{ maxWidth: 500, margin: "40px auto", padding: 24, alignItems: "center", borderRadius: 8, boxShadow: "0 2px 8px rgba(0,0,0,0.07)" }}>
       <div style={{ display: "flex", alignItems: "center", gap: 16, marginBottom: 24 }}>
         <div style={{ minWidth: 0, flex: 1, maxWidth: 300, display: "flex", alignItems: "center" }}>
           {editing ? (
@@ -240,9 +241,18 @@ export default function UserProfile() {
           {editing ? "Save" : "Edit"}
         </button>
       </div>
-      <div style={{ margin: "32px 0 16px 0" }}>
-        <ProfilePicSelector selectedPic={selectedPic} onSelect={handlePicSelect} />
-      </div>
+      <div style={{ margin: "24px 0"}}>
+          <ProfilePicSelector selectedPic={selectedPic} onSelect={handlePicSelect} />
+          <div style={{ marginTop: 16, display: "flex", justifyContent: "center"  }}>
+            <Image
+              src={selectedPic}
+              width={48}      // <-- required
+              height={48}
+              alt="Selected profile"
+              style={{ width: 80, height: 80, borderRadius: "50%", border: "2px solid #7b2ff2" }}
+            />
+          </div>
+        </div>
     </div>
   );
 }
