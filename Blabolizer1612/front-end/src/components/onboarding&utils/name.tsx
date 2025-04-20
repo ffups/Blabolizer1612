@@ -3,6 +3,7 @@
 import { useRef, useState, useEffect, FormEvent } from 'react';
 import ProfilePicSelector from "@/components/onboarding&utils/ProfilePicSelector";
 import Image from "next/image";
+import { useUsername } from "@/context/UsernameContext"; // Add this import
 
 const profilePics = [
   "/profile1.png",
@@ -18,12 +19,32 @@ export default function NamePage({ onComplete }: { onComplete: () => void }) {
   const [fading, setFading] = useState(false);
   const [selectedPic, setSelectedPic] = useState<string>(profilePics[0]);
   const inputRef = useRef<HTMLInputElement>(null);
+  const [errorFading, setErrorFading] = useState(false);
+  const { setUsername } = useUsername(); // Use context
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setName(e.target.value);
+    setUsername(e.target.value); // Live update context (and thus header)
+    // Do NOT update localStorage here
+  };
 
   useEffect(() => {
     if (inputRef.current) {
       inputRef.current.focus();
     }
   }, []);
+
+  useEffect(() => {
+    if (error) {
+      setErrorFading(false);
+      const fadeTimer = setTimeout(() => setErrorFading(true), 1250); // Half of 2500ms
+      const clearTimer = setTimeout(() => setError(null), 2500);
+      return () => {
+        clearTimeout(fadeTimer);
+        clearTimeout(clearTimer);
+      };
+    }
+  }, [error]);
 
   useEffect(() => {
     const focusInput = () => {
@@ -122,7 +143,8 @@ export default function NamePage({ onComplete }: { onComplete: () => void }) {
           type="text"
           placeholder="name or something"
           value={name}
-          onChange={(e) => setName(e.target.value)}
+          onChange={handleInputChange} // <-- Use the handler here
+
           style={{
             padding: "14px 18px",
             fontSize: "1.15rem",
@@ -161,6 +183,51 @@ export default function NamePage({ onComplete }: { onComplete: () => void }) {
             />
           </div>
         </div>
+
+        {/* Move error and greeting above the button */}
+        {(error || greeting) && (
+          <div style={{ minHeight: 32, marginBottom: 8 }}>
+            {error && (
+              <span
+                style={{
+                  display: "inline-block",
+                  color: "#fff",
+                  background: "rgba(25,98,112,0.7)",
+                  padding: "8px 18px",
+                  margin: "8px auto",
+                  borderRadius: "8px",
+                  fontSize: "1.1rem",
+                  fontWeight: 200,
+                  whiteSpace: "nowrap",
+                  opacity: errorFading ? 0 : 1,
+                  transition: "opacity 1.1s"
+                }}
+                aria-live="assertive"
+              >
+                {error}
+              </span>
+            )}
+            {greeting && (
+              <span
+                style={{
+                  display: "inline-block",
+                  color: "#fff",
+                  background: "rgba(25,98,112,0.7)",
+                  padding: "8px 18px",
+                  margin: "8px auto",
+                  borderRadius: "8px",
+                  fontSize: "1.1rem",
+                  fontWeight: 600,
+                  whiteSpace: "nowrap",
+                }}
+                aria-live="polite"
+              >
+                {greeting}
+              </span>
+            )}
+          </div>
+        )}
+
         <button
           type="submit"
           style={{
@@ -177,7 +244,7 @@ export default function NamePage({ onComplete }: { onComplete: () => void }) {
             marginTop: "12px",
             opacity: loading ? 0.7 : 1,
             pointerEvents: loading ? "none" : "auto",
-            position: "relative", // <-- key for overlay
+            position: "relative",
             overflow: "hidden",
             minWidth: "120px",
             minHeight: "56px",
@@ -186,7 +253,7 @@ export default function NamePage({ onComplete }: { onComplete: () => void }) {
           disabled={loading}
         >
           {/* Hide text when loading/greeting/error */}
-          <span style={{ opacity: loading || greeting || error ? 0 : 1 }}>boop</span>
+          <span style={{ opacity: loading ? 0 : 1 }}>boop</span>
           {/* Overlay loading spinner */}
           {loading && (
             <span
@@ -216,53 +283,12 @@ export default function NamePage({ onComplete }: { onComplete: () => void }) {
                 @keyframes spin {
                   0% { transform: rotate(0deg);}
                   100% { transform: rotate(360deg);}
-                }
-              `}</style>
-            </span>
-          )}
-          {/* Overlay greeting */}
-          {greeting && (
-            <span
-              style={{
-                position: "absolute",
-                left: "50%",
-                top: "50%",
-                transform: "translate(-50%, -50%)",
-                color: "#fff",
-                fontSize: "1.1rem",
-                zIndex: 2,
-                whiteSpace: "nowrap",
-              }}
-              aria-live="polite"
-            >
-              {greeting}
-            </span>
-          )}
-          {/* Overlay error */}
-          {error && (
-            <span
-              style={{
-                position: "absolute",
-                left: "50%",
-                top: "50%",
-                transform: "translate(-50%, -50%)",
-                color: "#fff",
-                background: "rgba(200,0,0,0.7)",
-                padding: "6px 14px",
-                borderRadius: "4px",
-                fontSize: "1rem",
-                zIndex: 2,
-                whiteSpace: "nowrap",
-              }}
-              aria-live="assertive"
-            >
-              {error}
+                `}
+              </style>
             </span>
           )}
         </button>
       </form>
-     
-     
     </div>
   );
 }

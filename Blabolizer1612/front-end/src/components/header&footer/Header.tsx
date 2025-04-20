@@ -1,23 +1,12 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
 import Image from "next/image";
+import { useUsername } from "@/context/UsernameContext"; // Import the context
 
 export default function Header() {
-  const [profilePic, setProfilePic] = useState<string | null>(null);
-  const [headerUsername, setHeaderUsername] = useState<string | null>(null);
-
-  useEffect(() => {
-    setProfilePic(localStorage.getItem("profilePic"));
-    setHeaderUsername(localStorage.getItem("username"));
-    const handleUpdate = () => {
-      setProfilePic(localStorage.getItem("profilePic"));
-      setHeaderUsername(localStorage.getItem("username"));
-    };
-    window.addEventListener("usernameUpdate", handleUpdate);
-    return () => window.removeEventListener("usernameUpdate", handleUpdate);
-  }, []);
+  const { username } = useUsername(); // Use the context for username
+  const profilePic = typeof window !== "undefined" ? localStorage.getItem("profilePic") : null;
 
   return (
     <header
@@ -39,7 +28,7 @@ export default function Header() {
         style={{
           display: "flex",
           alignItems: "center",
-          gap: "1.5rem", // sensible gap between nav items
+          gap: "1.5rem",
         }}
       >
         <Link
@@ -57,7 +46,6 @@ export default function Header() {
         >
           Home
         </Link>
-        {/* Add more buttons/links here as needed */}
         <Link
           href="/profile"
           aria-label="Go to profile page"
@@ -88,7 +76,7 @@ export default function Header() {
               }}
             />
           )}
-          {headerUsername || "Not set"}
+          {username || "Not set"}
         </Link>
       </nav>
     </header>
