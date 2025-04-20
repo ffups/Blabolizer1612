@@ -57,8 +57,8 @@ export default function CityManager() {
           style={{
             padding: "8px 16px",
             marginRight: "10px",
-            background: showRandomizer === false ? "#7b2ff2" : "#eee",
-            color: showRandomizer === false ? "#fff" : "#333",
+            background: showRandomizer === false ? "#762297" : "#14505c",
+            color: showRandomizer === false ? "#fff" : "#fff",
             border: "none",
             borderRadius: "6px",
             cursor: "pointer",
@@ -71,8 +71,8 @@ export default function CityManager() {
           onClick={() => setShowRandomizer(showRandomizer === true ? null : true)}
           style={{
             padding: "8px 16px",
-            background: showRandomizer === true ? "#7b2ff2" : "#eee",
-            color: showRandomizer === true ? "#fff" : "#333",
+            background: showRandomizer === true ? "#762297" : "#14505c",
+            color: showRandomizer === true ? "#fff" : "#fff",
             border: "none",
             borderRadius: "6px",
             cursor: "pointer",

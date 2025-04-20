@@ -13,20 +13,24 @@ const profilePics = [
 export default function UserProfile() {
   const [editing, setEditing] = useState(false);
   const [newName, setNewName] = useState("");
-  const [selectedPic, setSelectedPic] = useState<string>(profilePics[0]);
+  const [selectedPic, setSelectedPic] = useState<string>(() => localStorage.getItem("profilePic") || profilePics[0]);
   const ignoreBlurRef = useRef(false);
   const { username, setUsername } = useUsername();
+  const spanRef = useRef<HTMLSpanElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      setSelectedPic(localStorage.getItem("profilePic") || profilePics[0]);
-    }
-  }, []);
-
-  useEffect(() => {
-    // Initialize with context username or localStorage
-    setNewName(username || localStorage.getItem("username") || "");
+    setNewName(username); // do not fallback to localStorage
+    setSelectedPic(localStorage.getItem("profilePic") || profilePics[0]);
   }, [username]);
+
+  // Adjust input width to fit content
+  useEffect(() => {
+    if (editing && spanRef.current && inputRef.current) {
+      // Add some extra space (e.g., 16px)
+      inputRef.current.style.width = `${spanRef.current.offsetWidth + 16}px`;
+    }
+  }, [newName, editing]);
 
   const handlePicSelect = (pic: string) => {
     setSelectedPic(pic);
@@ -36,11 +40,16 @@ export default function UserProfile() {
 
   // Save to context and localStorage only when confirmed
   const handleNameSave = () => {
+    if (newName.trim().length === 0) {
+      setNewName(username); // revert to previous username
+      setEditing(false);
+      return;
+    }
     setEditing(false);
-    setUsername(newName); // live update everywhere
-    localStorage.setItem("username", newName); // persist to storage
+    setUsername(newName);
+    localStorage.setItem("username", newName);
   };
-
+  
   const handleBlur = () => {
     if (ignoreBlurRef.current) {
       ignoreBlurRef.current = false;
@@ -54,40 +63,61 @@ export default function UserProfile() {
       <div style={{ display: "flex", alignItems: "center", gap: 16, marginBottom: 24 }}>
         <div style={{ minWidth: 0, flex: 1, maxWidth: 300, display: "flex", alignItems: "center" }}>
           {editing ? (
-            <input
-              value={newName}
-              onChange={e => {
-                setNewName(e.target.value);
-                setUsername(e.target.value); // live update context as you type
-              }}
-              onBlur={handleBlur}
-              onKeyDown={e => {
-                if (e.key === "Enter" || e.key === "Escape") {
-                  e.preventDefault();
-                  handleNameSave();
-                }
-              }}
-              autoFocus
-              aria-label="Edit username"
-              style={{
-                fontSize: "2rem",
-                fontWeight: 700,
-                fontFamily: "inherit",
-                background: "rgba(122, 47, 242, 0)",
-                borderRadius: "16px",
-                color: "#fff",
-                padding: "0 12px",
-                height: "48px",
-                boxSizing: "border-box",
-                outline: "none",
-                minWidth: 0,
-                width: "100%",
-                whiteSpace: "nowrap",
-                overflow: "hidden",
-                textOverflow: "ellipsis",
-                border: "none"
-              }}
-            />
+            <>
+              <input
+                ref={inputRef}
+                value={newName}
+                onChange={e => {
+                  setNewName(e.target.value);
+                  if (e.target.value.trim().length > 0) {
+                    setUsername(e.target.value);
+                  }
+                }}
+                onBlur={handleBlur}
+                onKeyDown={e => {
+                  if (e.key === "Enter" || e.key === "Escape") {
+                    e.preventDefault();
+                    handleNameSave();
+                  }
+                }}
+                autoFocus
+                aria-label="Edit username"
+                style={{
+                  fontSize: "2rem",
+                  fontWeight: 700,
+                  fontFamily: "inherit",
+                  background: "rgba(122, 47, 242, 0)",
+                  borderRadius: "16px",
+                  color: "#fff",
+                  padding: "0 12px",
+                  height: "48px",
+                  boxSizing: "border-box",
+                  outline: "none",
+                  minWidth: 0,
+                  whiteSpace: "nowrap",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                  border: "none"
+                }}
+              />
+              {/* Hidden span to measure text width */}
+              <span
+                ref={spanRef}
+                style={{
+                  position: "absolute",
+                  visibility: "hidden",
+                  height: 0,
+                  overflow: "hidden",
+                  whiteSpace: "pre",
+                  fontSize: "2rem",
+                  fontWeight: 700,
+                  fontFamily: "inherit",
+                  padding: "0 12px",
+                }}
+              >
+                {newName || ""}
+              </span>
+            </>
           ) : (
             <span
               style={{
@@ -121,14 +151,15 @@ export default function UserProfile() {
           style={{
             fontSize: "1rem",
             padding: "0 16px",
-            background: "rgba(0, 0, 0, 0.27)",
-            border: "2px solid rgba(0, 0, 0, 0.6)",
+            background: "rgba(25, 97, 112, 0.33)",
+            border: "0px solid rgba(0, 0, 0, 0.6)",
             borderRadius: "24px",
             color: "#fff",
             cursor: "pointer",
             marginLeft: 8,
             transition: "background 0.2s, border 0.2s",
-            lineHeight: "48px"
+            lineHeight: "48px",
+            fontWeight: "bold",
           }}
         >
           {editing ? "Save" : "Edit"}

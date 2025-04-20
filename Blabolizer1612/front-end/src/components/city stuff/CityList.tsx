@@ -24,13 +24,14 @@ export default function CityList({
   const router = useRouter();
   const [deletedCity, setDeletedCity] = useState<string | null>(null);
   const [fade, setFade] = useState(false);
-
+  
   const handleDelete = async (cityToDelete: string) => {
     if (!username) {
       alert("No username found. Please log in first.");
       return;
     }
     try {
+      setDeletedCity(cityToDelete); // <-- Move this up
       if (setLoadingAction) setLoadingAction("delete");
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}api/delete`, {
         method: "DELETE",
@@ -39,17 +40,18 @@ export default function CityList({
         },
         body: JSON.stringify({ city: cityToDelete, username }),
       });
-
+  
       if (!response.ok) {
         const error = await response.json();
         throw new Error(error.message || "Failed to delete city.");
       }
-
-      setDeletedCity(cityToDelete);
+  
       setFade(false);
-      setTimeout(() => setFade(true), 100); // Start fade after short delay
-      setTimeout(() => setDeletedCity(null), 3600); // Remove message after fade
-      if (fetchCities) fetchCities();
+      setTimeout(() => setFade(true), 100);
+      setTimeout(() => {
+        setDeletedCity(null);
+        if (fetchCities) fetchCities();
+      }, 1600);
     } catch (error: unknown) {
       if (error instanceof Error) {
         alert(error.message);
@@ -60,111 +62,138 @@ export default function CityList({
   };
 
   return (
-    <ul style={{ listStyle: "none", padding: 0, margin: "1rem auto", maxWidth: 320 }}>
-      {cities.map((city, idx) => (
-        <React.Fragment key={city}>
-          {deletedCity === city ? (
-            <li>
-              <span
+    <div
+      style={{
+        overflowX: "auto",
+        maxWidth: "100%",
+        paddingBottom: "8px",
+      }}
+    >
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(2, minmax(120px, 1fr))",
+          gridAutoRows: "minmax(48px, auto)",
+          gap: "12px",
+          maxHeight: "280px", // 5 rows * 56px (adjust as needed)
+          minWidth: "360px",// ensures horizontal scroll if more than 5
+          alignItems: "stretch",
+        }}
+      >
+        {cities.map((city, idx) =>
+         renderItem
+            ? renderItem(city, idx, handleDelete)
+            : (
+              <div
+                key={city + idx}
                 style={{
-                  display: "block",
-                  fontSize: "1.2rem",
-                  marginBottom: "0.25rem",
-                  color: "white",
-                  opacity: fade ? 0 : 1,
-                  transition: "opacity 3.2s",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  background: "rgba(4, 226, 215, 0.21)",
+                  borderRadius: "8px",
+                  padding: "12px",
+                  fontSize: "1.1rem",
+                  minWidth: "0",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                  whiteSpace: "nowrap",
+                  minHeight: "48px",
+                  maxWidth: "220px", // or adjust as needed
+
                 }}
               >
-                City &quot;{city}&quot; has been deleted.
-              </span>
-            </li>
-          ) : (
-            renderItem
-              ? renderItem(city, idx, handleDelete)
-              : defaultRenderItem({
-                  city,
-                  idx,
-                  showDelete,
-                  loadingAction,
-                  handleDelete,
-                  router,
-                })
-          )}
-        </React.Fragment>
-      ))}
-    </ul>
+                <span
+                  style={{
+                    flex: 1,
+                    textAlign: "left",
+                    textTransform: "capitalize",
+                    cursor: "pointer",
+                    textDecoration: "underline",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    whiteSpace: "nowrap",
+                    maxWidth: "190px", // set max width for the text only
+                    display: "inline-block",
+                  }}
+                  title={city}
+                  onClick={() => {
+                    if (window.confirm(`Go to the page for "${city}"?`)) {
+                      router.push(`/city/${encodeURIComponent(city)}`);
+                    }
+                  }}
+                >
+                  {city}
+                </span>
+                {showDelete && (
+                  <span style={{ display: "inline-block", minWidth: "1.5em", textAlign: "center" }}>
+                    {loadingAction === "delete" && deletedCity === city ? (
+                      <span
+                        style={{
+                          display: "inline-block",
+                          width: "1.5em",
+                          height: "1.5em",
+                          border: "3px solid #fff",
+                          borderTop: "3px solid #f357a8",
+                          borderRadius: "50%",
+                          animation: "spin 1s linear infinite",
+                          verticalAlign: "middle",
+                        }}
+                      />
+                    ) : deletedCity === city && fade ? (
+                      <span
+                        style={{
+                          color: "#f357a8",
+                          fontWeight: "bold",
+                          fontSize: "1.1em",
+                          transition: "opacity 0.5s",
+                        }}
+                      >
+                        Deleted!
+                      </span>
+                    ) : (
+                      <button
+                        onClick={() => {
+                          if (window.confirm(`Are you sure you want to delete "${city}"?`)) {
+                            handleDelete(city);
+                          }
+                        }}
+                        style={{
+                          marginLeft: "10px",
+                          padding: "2px 10px",
+                          color: "white",
+                          border: "none",
+                          cursor: loadingAction === "add" || loadingAction === "delete" ? "not-allowed" : "pointer",
+                          borderRadius: "4px",
+                          background: "rgba(25,98,112,0.7)",
+                          fontSize: "1.5rem",
+                          lineHeight: 1,
+                          fontWeight: "bold",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                        }}
+                        aria-label={`Delete city ${city}`}
+                        disabled={loadingAction === "add" || loadingAction === "delete"}
+                      >
+                        <span style={{ position: "relative", top: "-3px" }}>-</span>
+                      </button>
+                    )}
+                    <style>
+                      {`
+                        @keyframes spin {
+                          0% { transform: rotate(0deg);}
+                          100% { transform: rotate(360deg);}
+                        }
+                      `}
+                    </style>
+                  </span>
+                )}
+              </div>
+            )
+        )}
+      </div>
+    </div>
   );
 }
 
-export function defaultRenderItem({
-  city,
-  idx,
-  showDelete,
-  loadingAction,
-  handleDelete,
-  router,
-  children,
-}: {
-  city: string;
-  idx: number;
-  showDelete?: boolean;
-  loadingAction?: "add" | "delete" | null;
-  handleDelete: (city: string) => void;
-  router: ReturnType<typeof useRouter>;
-  children?: React.ReactNode;
-}) {
-  return (
-    <li
-      key={idx}
-      style={{
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "flex-start",
-        fontSize: "1.2rem",
-        borderRadius: "6px",
-        margin: "0.25rem 0",
-        padding: "0.5rem 0.5rem 0.5rem 0.25rem",
-        transition: "background 0.2s",
-      }}
-    >
-      {children}
-      <span
-        style={{
-          textDecoration: "underline",
-          textTransform: "capitalize",
-          cursor: "pointer",
-          flex: 1,
-        }}
-        onClick={() => {
-          if (window.confirm(`Go to the page for "${city}"?`)) {
-            router.push(`/city/${encodeURIComponent(city)}`);
-          }
-        }}
-      >
-        {city}
-      </span>
-      {showDelete && (
-        <button
-          onClick={() => {
-            if (window.confirm(`Are you sure you want to delete "${city}"?`)) {
-              handleDelete(city);
-            }
-          }}
-          style={{
-            marginLeft: "10px",
-            padding: "2px 5px",
-            color: "white",
-            border: "none",
-            cursor: loadingAction === "add" || loadingAction === "delete" ? "not-allowed" : "pointer",
-            borderRadius: "4px",
-            background: "#f357a8",
-          }}
-          aria-label={`Delete city ${city}`}
-          disabled={loadingAction === "add" || loadingAction === "delete"}
-        >
-          Delete
-        </button>
-      )}
-    </li>
-  );
-}
