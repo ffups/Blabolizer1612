@@ -129,12 +129,12 @@ export default function CityList({
     onClick={handleBulkDelete}
     disabled={loadingAction === "delete" || selectedCities.length === 0}
     style={{
-      background: "#e74c3c",
+      background: selectedCities.length === 0 ? "#14505c" : "#762297",
       color: "#fff",
       border: "none",
       borderRadius: "6px",
-      padding: "8px 18px",
-      fontWeight: 600,
+      padding: "0",
+      fontWeight: 600,  
       fontSize: "1.3rem",
       cursor: loadingAction === "delete" || selectedCities.length === 0 ? "not-allowed" : "pointer",
       opacity: selectedCities.length === 0 ? 0.6 : 1,
@@ -143,7 +143,6 @@ export default function CityList({
       alignItems: "center",
       justifyContent: "center",
       minWidth: 40,
-      minHeight: 40,
     }}
     aria-label="Delete selected cities"
     title="Delete selected cities"
@@ -155,9 +154,9 @@ export default function CityList({
           width: "1.5em",
           height: "1.5em",
           border: "3px solid #fff",
-          borderTop: "3px solid #f357a8",
+          borderTop: "0px solid rgb(87, 220, 243)",
           borderRadius: "50%",
-          animation: "spin 1s linear infinite",
+          animation: "spin 1.5s linear infinite",
           verticalAlign: "middle",
         }}
       />
@@ -243,7 +242,7 @@ export default function CityList({
                       marginLeft: "10px",
                       width: "20px",
                       height: "20px",
-                      accentColor: "#e74c3c",
+                      accentColor: "#762297",
                       cursor: loadingAction === "delete" ? "not-allowed" : "pointer",
                     }}
                     aria-label={`Select city ${city} for deletion`}
