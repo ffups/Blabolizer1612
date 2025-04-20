@@ -4,6 +4,7 @@ const getCities = require("../src/apicalls/get");
 const deleteCity = require("../src/apicalls/delete");
 const weatherHandler = require("./weather");
 const forecastHandler = require("./forecast");
+const userexists = require("./userexists");
 
 const setCors = require('../src/utils/cors'); // adjust path as needed
 
@@ -59,6 +60,12 @@ if (req.method === 'GET' && req.url.startsWith('/weather')) {
 if (req.method === 'GET' && req.url.startsWith('/forecast')) {
   return forecastHandler(req, res);
 }
+
+// /userexists
+if (req.method === 'GET' && req.url.startsWith('/userexists')) {
+  return userExists(req, res);
+}
+
   // 404 fallback
   res.setHeader('Access-Control-Allow-Origin', 'https://blabolizer1612.vercel.app');
   res.setHeader('Access-Control-Allow-Methods', 'GET,POST,DELETE,OPTIONS');

@@ -11,8 +11,27 @@ export default function Home() {
   useEffect(() => {
     if (typeof window !== "undefined") {
       const storedUsername = localStorage.getItem("username");
-      setUsername(storedUsername);
-      setShowNamePage(!storedUsername);
+      if (!storedUsername) {
+        setUsername(null);
+        setShowNamePage(true);
+        return;
+      }
+      // Check with backend if user exists
+      fetch(`/api/userexists?name=${encodeURIComponent(storedUsername)}`)
+        .then(res => res.json())
+        .then(data => {
+          if (data.exists) {
+            setUsername(storedUsername);
+            setShowNamePage(false);
+          } else {
+            setUsername(null);
+            setShowNamePage(true);
+          }
+        })
+        .catch(() => {
+          setUsername(null);
+          setShowNamePage(true);
+        });
     }
   }, []);
 
