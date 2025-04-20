@@ -116,6 +116,7 @@ export default function CityPage() {
               fontWeight: 700,
               margin: 0,
               borderRadius: "16px",
+              textTransform: "capitalize",
               padding: "10px 24px",
               display: "inline-block",
               letterSpacing: "0.01em",
