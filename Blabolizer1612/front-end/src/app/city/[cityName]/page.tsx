@@ -30,9 +30,7 @@ export default function CityPage() {
 
   useEffect(() => {
     async function fetchForecast() {
-      const apiKey = "359d5e3adeaa343f7ad1e6cd2d59dace";
-      const url = `https://api.openweathermap.org/data/2.5/forecast?q=${encodeURIComponent(cityName)}&appid=${apiKey}&units=metric`;
-      const res = await fetch(url);
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}api/forecast?city=${encodeURIComponent(cityName)}`);
       if (res.ok) {
         const data: ForecastData = await res.json();
         setForecast(data.list);
@@ -43,9 +41,7 @@ export default function CityPage() {
 
   useEffect(() => {
     async function fetchWeather() {
-      const apiKey = "359d5e3adeaa343f7ad1e6cd2d59dace"; // <-- Replace with your real API key
-      const url = `https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(cityName)}&appid=${apiKey}&units=metric`;
-      const res = await fetch(url);
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}api/weather?city=${encodeURIComponent(cityName)}`);
       if (res.ok) {
         const data: WeatherData = await res.json();
         setWeather(data);
