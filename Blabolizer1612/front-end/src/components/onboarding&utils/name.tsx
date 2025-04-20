@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, FormEvent } from 'react';
+import { useRef, useState, useEffect, FormEvent } from 'react';
 import ProfilePicSelector from "@/components/onboarding&utils/ProfilePicSelector";
 import Image from "next/image";
 
@@ -17,6 +17,13 @@ export default function NamePage({ onComplete }: { onComplete: () => void }) {
   const [loading, setLoading] = useState<boolean>(false);
   const [fading, setFading] = useState(false);
   const [selectedPic, setSelectedPic] = useState<string>(profilePics[0]);
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, []);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -101,21 +108,44 @@ export default function NamePage({ onComplete }: { onComplete: () => void }) {
         </label>
         <input
           id="username-input"
+          ref={inputRef}
           type="text"
           placeholder="name or something"
           value={name}
           onChange={(e) => setName(e.target.value)}
-          style={{ padding: '10px', fontSize: '16px', marginRight: '10px' }}
+          style={{
+            padding: "14px 18px",
+            fontSize: "1.15rem",
+            borderRadius: "12px",
+            border: "0px solid #7b2ff2",
+            outline: "none",
+            background: "rgba(122, 47, 242, 0.14)",
+            color: "#fff",
+            marginRight: "10px",
+            marginBottom: "8px",
+            boxSizing: "border-box",
+            fontWeight: 500,
+            transition: "border 0.2s, background 0.2s",
+          }}
           aria-label="Username"
           disabled={loading}
         />
+        <style>
+          {`
+            input::placeholder {
+              color: #fff;
+              opacity: 1;
+              font-weight: 500;
+            }
+          `}
+        </style>
         <div style={{ margin: "24px 0" }}>
           <ProfilePicSelector selectedPic={selectedPic} onSelect={handlePicSelect} />
           <div style={{ marginTop: 16 }}>
             <Image
               src={selectedPic}
               width={48}      // <-- required
-  height={48} 
+              height={48}
               alt="Selected profile"
               style={{ width: 80, height: 80, borderRadius: "50%", border: "2px solid #7b2ff2" }}
             />
@@ -123,7 +153,21 @@ export default function NamePage({ onComplete }: { onComplete: () => void }) {
         </div>
         <button
           type="submit"
-          style={{ padding: '10px 20px', fontSize: '16px' }}
+          style={{
+            padding: "1rem 2.5rem",
+            fontSize: "1.25rem",
+            fontWeight: "bold",
+            border: "none",
+            borderRadius: "8px",
+            cursor: "pointer",
+            background: "linear-gradient(135deg, #7b2ff2 0%, rgb(25, 98, 112) 100%)",
+            color: "#fff",
+            boxShadow: "0 2px 8px rgba(0,0,0,0.07)",
+            transition: "background 0.2s, box-shadow 0.2s",
+            marginTop: "12px",
+            opacity: loading ? 0.7 : 1,
+            pointerEvents: loading ? "none" : "auto",
+          }}
           aria-label="Submit username"
           disabled={loading}
         >
