@@ -16,6 +16,8 @@ export default function UserProfile() {
   const [editing, setEditing] = useState(false);
   const [newName, setNewName] = useState("");
   const [selectedPic, setSelectedPic] = useState(profilePics[0]);
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const [saving, setSaving] = useState(false);
   const ignoreBlurRef = useRef(false);
   const { username, setUsername } = useUsername();
   const spanRef = useRef<HTMLSpanElement>(null);
@@ -101,10 +103,10 @@ export default function UserProfile() {
     setNewName(stored ?? username);
     setEditing(true);
   };
+
   // Save to context and localStorage only when confirmed
-  const handleNameSave = () => {
+  const handleNameSave = async () => {
     if (newName.trim().length === 0) {
-      // Always revert to the latest value in localStorage
       const stored = localStorage.getItem("username") || "";
       setNewName(stored);
       setUsername(stored);
@@ -112,8 +114,30 @@ export default function UserProfile() {
       return;
     }
     setEditing(false);
+    setSaving(true);
+    setErrorMsg(null);
     setUsername(newName);
     localStorage.setItem("username", newName);
+
+    try {
+      const res = await fetch("/api/post", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name: newName }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setUsername(username);
+        localStorage.setItem("username", username || "");
+        setErrorMsg(data.error || "Failed to update username on server.");
+      }
+    } catch {
+      setUsername(username);
+      localStorage.setItem("username", username || "");
+      setErrorMsg("Network error: Failed to update username on server.");
+    } finally {
+      setSaving(false);
+    }
   };
 
   const handleBlur = () => {
@@ -221,9 +245,13 @@ export default function UserProfile() {
             </span>
           )}
         </div>
+        {errorMsg && (
+          <div style={{ color: "red", marginBottom: 8 }}>{errorMsg}</div>
+        )}
         <button
           onMouseDown={() => { ignoreBlurRef.current = true; }}
           onClick={editing ? handleNameSave : handleEdit}
+          disabled={saving}
           style={{
             fontSize: "1rem",
             padding: "0 16px",
@@ -231,14 +259,14 @@ export default function UserProfile() {
             border: "0px solid rgba(0, 0, 0, 0.6)",
             borderRadius: "24px",
             color: "#fff",
-            cursor: "pointer",
+            cursor: saving ? "not-allowed" : "pointer",
             marginLeft: 8,
             transition: "background 0.2s, border 0.2s",
             lineHeight: "48px",
             fontWeight: "bold",
           }}
         >
-          {editing ? "Save" : "Edit"}
+          {editing ? (saving ? "Saving..." : "Save") : "Edit"}
         </button>
       </div>
       <div style={{ margin: "24px 0"}}>
