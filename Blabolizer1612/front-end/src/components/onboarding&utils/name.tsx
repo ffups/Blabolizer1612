@@ -106,7 +106,7 @@ export default function NamePage({ onComplete }: { onComplete: () => void }) {
     <div
       style={{
         textAlign: 'center',
-        marginTop: '50px',
+        marginTop: '20px',
         opacity: fading ? 0 : 1,
         transition: 'opacity 1s ease'
       }}
@@ -177,45 +177,92 @@ export default function NamePage({ onComplete }: { onComplete: () => void }) {
             marginTop: "12px",
             opacity: loading ? 0.7 : 1,
             pointerEvents: loading ? "none" : "auto",
+            position: "relative", // <-- key for overlay
+            overflow: "hidden",
+            minWidth: "120px",
+            minHeight: "56px",
           }}
           aria-label="Submit username"
           disabled={loading}
         >
-          boop
+          {/* Hide text when loading/greeting/error */}
+          <span style={{ opacity: loading || greeting || error ? 0 : 1 }}>boop</span>
+          {/* Overlay loading spinner */}
+          {loading && (
+            <span
+              style={{
+                position: "absolute",
+                left: "50%",
+                top: "50%",
+                transform: "translate(-50%, -50%)",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                zIndex: 2,
+              }}
+            >
+              <span
+                style={{
+                  display: 'inline-block',
+                  width: '24px',
+                  height: '24px',
+                  border: '3px solid #7b2ff2',
+                  borderTop: '3px solid #eee',
+                  borderRadius: '50%',
+                  animation: 'spin 1s linear infinite'
+                }}
+              />
+              <style>{`
+                @keyframes spin {
+                  0% { transform: rotate(0deg);}
+                  100% { transform: rotate(360deg);}
+                }
+              `}</style>
+            </span>
+          )}
+          {/* Overlay greeting */}
+          {greeting && (
+            <span
+              style={{
+                position: "absolute",
+                left: "50%",
+                top: "50%",
+                transform: "translate(-50%, -50%)",
+                color: "#fff",
+                fontSize: "1.1rem",
+                zIndex: 2,
+                whiteSpace: "nowrap",
+              }}
+              aria-live="polite"
+            >
+              {greeting}
+            </span>
+          )}
+          {/* Overlay error */}
+          {error && (
+            <span
+              style={{
+                position: "absolute",
+                left: "50%",
+                top: "50%",
+                transform: "translate(-50%, -50%)",
+                color: "#fff",
+                background: "rgba(200,0,0,0.7)",
+                padding: "6px 14px",
+                borderRadius: "4px",
+                fontSize: "1rem",
+                zIndex: 2,
+                whiteSpace: "nowrap",
+              }}
+              aria-live="assertive"
+            >
+              {error}
+            </span>
+          )}
         </button>
       </form>
-      {loading && (
-        <div style={{ marginTop: '20px' }}>
-          <span
-            style={{
-              display: 'inline-block',
-              width: '24px',
-              height: '24px',
-              border: '3px solid #7b2ff2',
-              borderTop: '3px solid #eee',
-              borderRadius: '50%',
-              animation: 'spin 1s linear infinite'
-            }}
-          />
-          <style>{`
-            @keyframes spin {
-              0% { transform: rotate(0deg);}
-              100% { transform: rotate(360deg);}
-            }
-          `}</style>
-          <p>Checking username...</p>
-        </div>
-      )}
-      {greeting && (
-        <p style={{ marginTop: '20px', fontSize: '20px' }} aria-live="polite">
-          {greeting}
-        </p>
-      )}
-      {error && (
-        <p style={{ color: '#fff', marginTop: '10px', padding: '8px 16px', borderRadius: '4px' }} aria-live="assertive">
-          {error}
-        </p>
-      )}
+     
+     
     </div>
   );
 }

@@ -17,7 +17,7 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
   }, []);
 
   return (
-    <>
+    <div style={{ flex: 1, display: "flex", flexDirection: "column" }}>
           <ScrollToTop />
 
       {consent === null && (
@@ -48,7 +48,10 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
           `}
         </Script>
       )}
+      <main style={{ flex: 1, display: "flex", flexDirection: "column" }}>
       {children}
-    </>
+      </main>
+      </div>
+
   );
 }

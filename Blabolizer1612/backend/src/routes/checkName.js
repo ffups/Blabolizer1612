@@ -9,7 +9,7 @@ router.post('/api/post', async (req, res) => {
   const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress; // Get client IP
   const hashedKey = hashIp(ip); // Hash the IP for rate limiting
 
-  const allowed = await rateLimit(hashedKey, 5, 60); // 5 requests per 60 seconds
+  const allowed = await rateLimit(hashedKey, 15, 60); // 5 requests per 60 seconds
   if (!allowed) {
     return res.status(429).json({ error: 'Too many requests, please try again later.' });
   }

@@ -2,8 +2,8 @@ const saveNameToDatabase = require('../src/db/saveNameToDatabase');
 const saveCityToDatabase = require("../src/db/saveCityToDatabase");
 const getCities = require("../src/apicalls/get");
 const deleteCity = require("../src/apicalls/delete");
-const weatherHandler = require("../src/apicalls/weather");
-const forecastHandler = require("../src/apicalls/forecast");
+const weatherHandler = require("./weather");
+const forecastHandler = require("./forecast");
 
 const setCors = require('../src/utils/cors'); // adjust path as needed
 

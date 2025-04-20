@@ -72,23 +72,45 @@ export default function CityPage() {
         padding: "0 24px 20px 24px",
         borderRadius: 8,
         boxShadow: "0 2px 8px rgba(0,0,0,0.07)",
-        background: "rgba(91, 0, 238, 0)", // match your homepage background
+        background: "rgba(91, 0, 238, 0)",
         textAlign: "center",
+        width: "100%",
       }}
     >
+      <style>
+        {`
+          @media (max-width: 600px) {
+            .city-flex-row {
+              flex-direction: column !important;
+              gap: 12px !important;
+            }
+            .city-image {
+              width: 100% !important;
+              max-width: 100% !important;
+              height: auto !important;
+            }
+            .city-title {
+              font-size: 1.4rem !important;
+              padding: 8px 8px !important;
+            }
+          }
+        `}
+      </style>
       <div style={{ height: "32px" }} />
       {imageUrl && (
         <div
+          className="city-flex-row"
           style={{
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
             gap: "24px",
             margin: "24px 0",
-            flexDirection: "row", // left-to-right
+            flexDirection: "row",
           }}
         >
           <h1
+            className="city-title"
             style={{
               fontSize: "2.2rem",
               fontWeight: 700,
@@ -120,8 +142,9 @@ export default function CityPage() {
             alt={cityName}
             width={280}
             height={180}
+            className="city-image"
             style={{ borderRadius: 12, height: "auto", maxWidth: 280 }}
-            unoptimized // (optional, if you have issues with external domains)
+            unoptimized
           />
         </div>
       )}
@@ -140,6 +163,7 @@ export default function CityPage() {
           textDecoration: "underline",
           transition: "background 0.2s, color 0.2s",
           boxShadow: "0 1px 4px 0 rgba(25,97,112,0.07)",
+          wordBreak: "break-word",
         }}
       >
         View {cityName} on Wikipedia
@@ -158,7 +182,6 @@ export default function CityPage() {
           <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
             {forecast
               .filter((item) =>
-                // Get one forecast per day (at 12:00)
                 item.dt_txt.includes("12:00:00")
               )
               .map((item) => (

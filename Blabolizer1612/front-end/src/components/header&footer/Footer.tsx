@@ -10,10 +10,6 @@ export default function Footer() {
       padding: "1rem",
       width: "100%",
       boxShadow: "0 -2px 8px rgba(0,0,0,0.04)",
-      left: undefined,
-      position: "fixed", // Add this line
-        bottom: 0,         // Stick to the bottom
-      zIndex: 100,
     }}
       aria-label="Site footer"
     >
