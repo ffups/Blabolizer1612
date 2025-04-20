@@ -3,6 +3,7 @@
 import { useRef, useState, useEffect, FormEvent } from 'react';
 import ProfilePicSelector from "@/components/onboarding&utils/ProfilePicSelector";
 import Image from "next/image";
+import { useUsername } from "@/context/UsernameContext"; // Add this import
 
 const profilePics = [
   "/profile1.png",
@@ -19,6 +20,13 @@ export default function NamePage({ onComplete }: { onComplete: () => void }) {
   const [selectedPic, setSelectedPic] = useState<string>(profilePics[0]);
   const inputRef = useRef<HTMLInputElement>(null);
   const [errorFading, setErrorFading] = useState(false);
+  const { setUsername } = useUsername(); // Use context
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setName(e.target.value);
+    setUsername(e.target.value); // Live update context (and thus header)
+    // Do NOT update localStorage here
+  };
 
   useEffect(() => {
     if (inputRef.current) {
@@ -135,7 +143,8 @@ export default function NamePage({ onComplete }: { onComplete: () => void }) {
           type="text"
           placeholder="name or something"
           value={name}
-          onChange={(e) => setName(e.target.value)}
+          onChange={handleInputChange} // <-- Use the handler here
+
           style={{
             padding: "14px 18px",
             fontSize: "1.15rem",
@@ -244,7 +253,7 @@ export default function NamePage({ onComplete }: { onComplete: () => void }) {
           disabled={loading}
         >
           {/* Hide text when loading/greeting/error */}
-          <span style={{ opacity: loading || greeting ? 0 : 1 }}>boop</span>
+          <span style={{ opacity: loading ? 0 : 1 }}>boop</span>
           {/* Overlay loading spinner */}
           {loading && (
             <span
