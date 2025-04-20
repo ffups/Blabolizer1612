@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import "./globals.css";
-  import ClientLayout from "./ClientLayout";
-import Footer from "@/components/Footer";
-import Header from "@/components/Header";
+import ClientLayout from "./ClientLayout";
+import Header from "@/components/header&footer/Header";
+import Footer from "@/components/header&footer/Footer";
+import { UsernameProvider } from "@/context/UsernameContext";
 
 export const metadata: Metadata = {
   title: "Blabolizer1612",
@@ -16,11 +17,22 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body>
-        <Header />
-        <ClientLayout>{children}
-        <Footer />
-        </ClientLayout>
+      <body 
+        style={{
+          minHeight: "100vh",
+          display: "flex",
+          flexDirection: "column",
+          margin: 0,
+        }}
+        >
+
+        <UsernameProvider>
+      <Header/>
+
+          <ClientLayout>{children}</ClientLayout>
+        </UsernameProvider>
+      <Footer/>
+
       </body>
     </html>
   );

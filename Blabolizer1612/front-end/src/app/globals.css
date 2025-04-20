@@ -7,6 +7,11 @@
   :root {
     --background: #0a0a0a;
     --foreground: #ededed;
+    /* just for finding colour rgb codes  */
+    --baackground: #ffffff; 
+    --button-bg: rgba(25,98,112,0.7);
+    ;
+
   }
 }
 
@@ -20,7 +25,7 @@ body {
   color: var(--foreground);
   background: linear-gradient(270deg, #7b2ff2, #420949, #196270, #7b2ff2);
   background-size: 600% 600%;
-  animation: gradientBG 16s ease infinite;
+  animation: gradientBG 26s ease infinite;
   font-family: Arial, Helvetica, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;

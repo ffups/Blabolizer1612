@@ -1,16 +1,20 @@
 "use client";
 import { useState } from "react";
+import { usePathname } from "next/navigation";
+import Footer from "@/components/header&footer/Footer";
 
 export default function ConsentBanner({
-  visible,
   onConsent,
   onDecline,
 }: {
-  visible: boolean;
   onConsent: () => void;
   onDecline: () => void;
 }) {
   const [fading, setFading] = useState(false);
+  const pathname = usePathname();
+
+  // Hide banner on privacy policy page
+  if (pathname === "/privacy") return null;
 
   const handleClose = (callback?: () => void) => {
     setFading(true);
@@ -22,8 +26,6 @@ export default function ConsentBanner({
 
   const accept = () => handleClose(onConsent);
   const decline = () => handleClose(onDecline);
-
-  if (!visible) return null;
 
   return (
     <div
@@ -77,6 +79,7 @@ export default function ConsentBanner({
             background: "rgba(2, 168, 160, 0.51)"
           }}>Decline</button>
       </div>
+      <Footer />
     </div>
   );
 }

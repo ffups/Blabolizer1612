@@ -2,6 +2,7 @@
 import Script from "next/script";
 import { useEffect, useState } from "react";
 import ConsentBanner from "./privacy/consentBanner";
+import ScrollToTop from "@/components/onboarding&utils/ScrollToTop";
 
 export default function ClientLayout({ children }: { children: React.ReactNode }) {
   const [consent, setConsent] = useState<null | boolean>(null);
@@ -17,9 +18,10 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
 
   return (
     <>
+          <ScrollToTop />
+
       {consent === null && (
         <ConsentBanner
-          visible={true}
           onConsent={() => {
             localStorage.setItem("matomoConsent", "true");
             setConsent(true);

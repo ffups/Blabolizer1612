@@ -158,6 +158,6 @@ export default function PrivacyPage() {
           {error && <p style={{ color: "red" }} aria-live="polite">{error}</p>}
         </form>
       )}
-    </main>
+      </main>
   );
 }

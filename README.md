@@ -4,7 +4,7 @@
 
 Blabolizer1612 is a full-stack web application built with Next.js (frontend) and Node.js (backend). It allows users to register a username, save and delete cities associated with their username, and demonstrates privacy-friendly analytics. All data is stored in a Supabase database.
 
-## How to Run
+## How to Runnnnn
 
 ### Prerequisites
 
