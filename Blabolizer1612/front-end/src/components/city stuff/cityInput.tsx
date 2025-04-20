@@ -83,7 +83,7 @@ export default function CityInput({ username, cities, error, fetchCities }: Prop
 
       if (!response.ok) {
         const error = await response.json();
-        throw new Error(error.message || "Failed to add city.");
+        throw new Error(error.message || "You have exceeded the rate limit. Please try again in a minute.");
       }
 
       setCity("");

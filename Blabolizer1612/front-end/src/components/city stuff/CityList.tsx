@@ -43,7 +43,7 @@ export default function CityList({
   
       if (!response.ok) {
         const error = await response.json();
-        throw new Error(error.message || "Failed to delete city.");
+        throw new Error(error.message || "You have exceeded the rate limit. Please try again in a minute.");
       }
   
       setFade(false);

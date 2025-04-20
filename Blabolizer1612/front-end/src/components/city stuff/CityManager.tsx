@@ -32,7 +32,7 @@ export default function CityManager() {
         `${process.env.NEXT_PUBLIC_API_URL}api/get?username=${encodeURIComponent(username)}`,
         { method: 'GET' }
       );
-      if (!response.ok) throw new Error('Failed to fetch cities.');
+      if (!response.ok) throw new Error('You have exceeded the rate limit. Please try again in a minute.');
       const data = await response.json();
       setCities(data.cities);
     } catch (err) {

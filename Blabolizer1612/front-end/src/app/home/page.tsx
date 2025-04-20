@@ -28,7 +28,7 @@ export default function Home() {
       style={{
         maxWidth: 500,
         margin: "40px auto",
-        padding: 24,
+        padding: "0 24px",
         borderRadius: 8,
         boxShadow: "0 2px 8px rgba(0,0,0,0.07)",
         background: "rgba(122, 47, 242, 0)", // match your profile box background
@@ -48,7 +48,7 @@ export default function Home() {
         This tool aims to help this pressing problem by generating a random city from a list curated by you!
       </p>
       <p style={{ fontSize: "1.1rem", marginBottom: "0.5rem", color: "#ffffff" }}>
-        All you need to do to get started is create a list of cities you would like to visit! Or choose from a preset :)
+        All you need to do to get started is create a list of cities you would like to visit! 
       </p>
       <p
         style={{

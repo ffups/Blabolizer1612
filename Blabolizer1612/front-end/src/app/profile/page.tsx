@@ -13,14 +13,23 @@ const profilePics = [
 export default function UserProfile() {
   const [editing, setEditing] = useState(false);
   const [newName, setNewName] = useState("");
-  const [selectedPic, setSelectedPic] = useState<string>(() => localStorage.getItem("profilePic") || profilePics[0]);
+  const [selectedPic, setSelectedPic] = useState(profilePics[0]);
   const ignoreBlurRef = useRef(false);
   const { username, setUsername } = useUsername();
   const spanRef = useRef<HTMLSpanElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    setNewName(username); // do not fallback to localStorage
+    setNewName(username); // or get from localStorage if needed
+  }, [username]);
+
+  useEffect(() => {
+    // Only runs on client
+    const storedPic = localStorage.getItem("profilePic");
+    if (storedPic) setSelectedPic(storedPic);
+  }, []);
+
+  useEffect(() => {
     setSelectedPic(localStorage.getItem("profilePic") || profilePics[0]);
   }, [username]);
 
