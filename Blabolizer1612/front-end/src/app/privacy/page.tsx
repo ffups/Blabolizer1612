@@ -91,16 +91,25 @@ export default function PrivacyPage() {
   };
 
   return (
-    <main>
+    <main   style={{
+      maxWidth: 500,
+      margin: "0 auto",
+      padding: "0 24px",
+      borderRadius: 8,
+      boxShadow: "0 2px 8px rgba(0,0,0,0.07)",
+      background: "rgba(122, 47, 242, 0)",
+    }}>
       <h1>Privacy Policy</h1>
-      <p>We track anonymized page views and usage data to improve the app. No personal data is stored. You can opt out at any time.</p>
-      <p>You can opt out of analytics tracking below:</p>
+      <p>I track anonymized page views and usage data to improve the app. <br />
+      (and because I was required for this project :bunnysweat:)
+         <br /> No personal data is stored. <br />
+         You can opt out at any time.</p>
       <iframe
         style={{
           border: "2px solid #ccc",
           borderRadius: "8px",
-          height: 250,
-          width: "100%",
+          height: 150,
+          width: "80%",
           margin: "1rem 0",
           boxShadow: "0 2px 8px rgba(0,0,0,0.1)"
         }}
@@ -124,7 +133,7 @@ export default function PrivacyPage() {
 
       <h2>Request Your Data or Erasure</h2>
       {submitted ? (
-        <p aria-live="polite">Thank you! Your request has been received. We will process it as soon as possible.</p>
+        <p aria-live="polite"> I will process it as soon as possible(maybe tomorrow, maybe not).</p>
       ) : (
         <form onSubmit={handleSubmit} style={{ marginTop: "1rem" }}>
           <label>
