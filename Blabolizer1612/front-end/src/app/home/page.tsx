@@ -7,6 +7,7 @@ import CityManager from "@/components/city stuff/CityManager";
 export default function Home() {
   const [username, setUsername] = useState<string | null>(null);
   const [showNamePage, setShowNamePage] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -14,9 +15,11 @@ export default function Home() {
       if (!storedUsername) {
         setUsername(null);
         setShowNamePage(true);
+        setLoading(false);
         return;
       }
-      // Check with backend if user exists
+      // Show loading while checking backend
+      setLoading(true);
       fetch(`/api/userexists?name=${encodeURIComponent(storedUsername)}`)
         .then(res => res.json())
         .then(data => {
@@ -26,12 +29,16 @@ export default function Home() {
           } else {
             setUsername(null);
             setShowNamePage(true);
+            // Optionally clear invalid username from localStorage:
+            localStorage.removeItem("username");
           }
         })
         .catch(() => {
-          setUsername(null);
-          setShowNamePage(true);
-        });
+          // On error, keep the previous state or show an error message
+          setUsername(storedUsername);
+          setShowNamePage(false);
+        })
+        .finally(() => setLoading(false));
     }
   }, []);
 
@@ -48,9 +55,10 @@ export default function Home() {
     };
   }, []);
 
+  if (loading) return null; // or a loading spinner
+
   return (
     <>
-      {/* Only show NamePage if username is not set */}
       {showNamePage ? (
         <NamePage
           onComplete={() => {
@@ -60,7 +68,6 @@ export default function Home() {
           }}
         />
       ) : (
-        // Main Home Content only shows if username exists
         <div
           style={{
             maxWidth: 500,
