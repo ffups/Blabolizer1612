@@ -20,7 +20,7 @@ export default function Home() {
       }
       // Show loading while checking backend
       setLoading(true);
-      fetch(`/api/userexists?name=${encodeURIComponent(storedUsername)}`)
+      fetch(`${process.env.NEXT_PUBLIC_API_URL}api/userexists?name=${encodeURIComponent(storedUsername)}`)
         .then(res => res.json())
         .then(data => {
           if (data.exists) {
