@@ -1,5 +1,6 @@
 "use client";
 
+import React from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useUsername } from "@/context/UsernameContext"; // Import the context
@@ -7,7 +8,19 @@ import NavigationButtons from "@/components/onboarding&utils/navigation";
 
 export default function Header() {
   const { username } = useUsername(); // Use the context for username
-  const profilePic = typeof window !== "undefined" ? localStorage.getItem("profilePic") : null;
+  const [profilePic, setProfilePic] = React.useState<string | null>(
+    typeof window !== "undefined" ? localStorage.getItem("profilePic") : null
+  );
+
+  React.useEffect(() => {
+    const handleProfilePicUpdate = () => {
+      setProfilePic(localStorage.getItem("profilePic"));
+    };
+    window.addEventListener("profilePicUpdate", handleProfilePicUpdate);
+    return () => {
+      window.removeEventListener("profilePicUpdate", handleProfilePicUpdate);
+    };
+  }, []);
 
   return (
     <header

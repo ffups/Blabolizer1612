@@ -17,7 +17,7 @@ export default function ProfilePicSelector({
   const handleSelect = (pic: string) => {
     if (typeof window !== "undefined") {
       localStorage.setItem("profilePic", pic);
-      window.dispatchEvent(new Event("usernameUpdate"));
+      window.dispatchEvent(new Event("profilePicUpdate")); // changed event name
     }
     if (onSelect) onSelect(pic);
   };

@@ -51,20 +51,20 @@ module.exports = (req, res) => {
   if (req.method === 'DELETE' && req.url === '/delete') {
     return deleteCity(req, res);
   }
-// /weather
-if (req.method === 'GET' && req.url.startsWith('/weather')) {
-  return weatherHandler(req, res);
-}
+  // /weather
+  if (req.method === 'GET' && req.url.startsWith('/weather')) {
+    return weatherHandler(req, res);
+  }
 
-// /forecast
-if (req.method === 'GET' && req.url.startsWith('/forecast')) {
-  return forecastHandler(req, res);
-}
+  // /forecast
+  if (req.method === 'GET' && req.url.startsWith('/forecast')) {
+    return forecastHandler(req, res);
+  }
 
-// /userexists
-if (req.method === 'GET' && req.url.startsWith('/userexists')) {
-  return userExists(req, res);
-}
+  // /userexists
+  if (req.method === 'GET' && req.url.startsWith('/userexists')) {
+    return userexists(req, res);
+  }
 
   // 404 fallback
   res.setHeader('Access-Control-Allow-Origin', 'https://blabolizer1612.vercel.app');
